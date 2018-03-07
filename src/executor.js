@@ -2,6 +2,7 @@ import {generateRandomPerson, getGG, getPopulationCount, randomInteger} from "./
 import {getAvgHealth, getChildrenData, getParents} from "./populationHelpers";
 import {processReplace} from "./replaceStrategies";
 import {cloneDeep, merge} from "lodash";
+import {getSeeds} from "./statisticHelpers";
 
 var dataSample = {
     dimensions: 1,
@@ -30,35 +31,57 @@ export function execute(data, props) {
     const statistic = [];
     const constants = merge(constantsBase, props);
     let execution = 0;
+    data.nfe = 0;
+    const deba = constants.deba;
+    constants.deba = (x) => {
+        data.nfe++;
+        return deba(x);
+    };
+
+    updateStatistic(statistic, data, constants);
 
     while (true) {
-        step(data, constants);
+        step(data, constants, execution);
 
         execution++;
+        console.log(`AVG health for step ${execution}:` ,statistic[statistic.length - 1].avgHealth);
 
-        updateStatistic(statistic, data, constants, execution);
+        updateStatistic(statistic, data, constants);
 
         if (execution > constants.maxExecutions) {
             console.log("stop because of iterations");
-            return;
+            const res = expandStatistic(statistic.pop(), data, constants, execution);
+            res.reason = "executions";
+            return res;
         } else if (stopBecauseOfStatistic(statistic, constants)) {
             console.log("stop because of statistic");
-            return;
+            const res = expandStatistic(statistic.pop(), data, constants, execution);
+            res.reason = "statistic";
+            return res;
         }
     }
 }
 
-export function updateStatistic(statistic, data, constants, executions) {
-    statistic.push(getStatistic(data, constants, executions));
+export function updateStatistic(statistic, data, constants) {
+    statistic.push(getStatistic(data, constants));
     if (statistic.length > constants.maxStatisticStorage) {
         statistic.shift();
     }
 }
 
-export function getStatistic(data, constants, execution) {
+export function getStatistic(data, constants) {
     return {
-        avgHealth: getAvgHealth(data.population, constants.f)
+        avgHealth: getAvgHealth(data.population, constants.deba)
     }
+}
+
+export function expandStatistic(statistic, data, constants, executions) {
+    console.log("expanding statistic")
+    statistic.seeds = getSeeds(data, constants);
+    statistic.executions = executions;
+    statistic.nfe = data.nfe;
+    constants.extender(statistic, data, constants)
+    return statistic;
 }
 
 export function stopBecauseOfStatistic(statistic, constants) {
@@ -70,10 +93,18 @@ export function stopBecauseOfStatistic(statistic, constants) {
 }
 
 
-export function step(data, constants) {
+export function step(data, constants, execution) {
+    if (execution === 0) console.time('getParents');
     const parent = getParents(data, constants);
+    if (execution === 0) console.timeEnd('getParents');
+
+    if (execution === 0) console.time('getChildrenData');
     const childrenData = getChildrenData(parent, data, constants);
+    if (execution === 0) console.timeEnd('getChildrenData');
+
+    if (execution === 0) console.time('processReplace');
     processReplace(data, childrenData, constants);
+    if (execution === 0) console.timeEnd('processReplace');
 
 }
 

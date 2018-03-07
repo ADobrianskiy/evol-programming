@@ -1,16 +1,18 @@
-import {getByteArrays, getGG, getNumberFromBytes, randomInteger} from "./helpers";
+import {getByteArray, getGG, getNumberFromBytes, randomInteger} from "./helpers";
+import {health} from "./functions";
 import {concat} from "lodash";
 
 export function getParents(data, constants) {
     const population = data.population.slice();
     const GG = getGG(data, constants);
     return Array(GG / 2)
+        .fill(0)
         .map(() => {
-            const index1 = randomInteger(0, population.length);
-            const parent1 = population.slice(index1, 1);
+            const index1 = randomInteger(0, population.length - 1);
+            const parent1 = population.splice(index1, 1)[0];
 
-            const index2 = randomInteger(0, population.length);
-            const parent2 = population.slice(index2, 1);
+            const index2 = randomInteger(0, population.length - 1);
+            const parent2 = population.splice(index2, 1)[0];
 
             return {
                 parent1,
@@ -21,29 +23,32 @@ export function getParents(data, constants) {
 
 export function getChildrenData(parents, data, constants) {
     return parents.map(({parent1, parent2}) => {
-        const [byteParent1, byteParent2] = getByteArrays(parent1, parent2);
-        let [child1, child2] = applyCossengover(byteParent1, byteParent2, constants.pc);
+        let [child1, child2] = applyCossengover(parent1, parent2, constants.pc);
+
         child1 = applyMutation(child1);
         child2 = applyMutation(child2);
 
         return {
             parents: {parent1, parent2},
             children: {
-                child1: getNumberFromBytes(child1),
-                child2: getNumberFromBytes(child2)
+                child1: child1,
+                child2: child2
             }
         };
     })
 }
 
 export function applyCossengover(arr1, arr2, p) {
-    let child1 = arr1.slice();
-    let child2 = arr2.slice();
+    arr1 = arr1.slice();
+    arr2 = arr2.slice();
+
+    let child1 = arr1;
+    let child2 = arr2;
 
     if (Math.random() < p) {
         const index = randomInteger(1, arr1.length);
-        child1 = concat(arr1.slice(0, index), arr2(index));
-        child2 = concat(arr2.slice(0, index), arr1(index));
+        child1 = concat(arr1.slice(0, index), arr2.slice(index));
+        child2 = concat(arr2.slice(0, index), arr1.slice(index));
     }
 
     return [child1, child2]
@@ -59,8 +64,8 @@ export function applyMutation(arr, p) {
     return arr;
 }
 
-export function getAvgHealth(population, f) {
+export function getAvgHealth(population, deba) {
     return population
-        .map(e => f(e))
+        .map(e => health(deba, e))
         .reduce((a, b) => a + b)
 }

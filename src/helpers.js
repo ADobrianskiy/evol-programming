@@ -1,4 +1,11 @@
+import {chunk, flatten} from "lodash";
+import {build} from "node-xlsx";
+import {writeFileSync} from "fs";
+
+
 const BitArray = require('node-bitarray');
+
+export const countOfBits = 10;
 
 export function getPopulationCount(n){
     if(n < 4) return 500;
@@ -6,16 +13,21 @@ export function getPopulationCount(n){
 }
 
 export function writeExcel(){
-    const data = [[1, 2, 3], [true, false, null, 'sheetjs'], ['foo', 'bar', new Date('2014-02-19T14:30Z'), '0.3'], ['baz', null, 'qux']];
-    var buffer = xlsx.build([{name: "mySheetName", data: data}]); // Returns a buffer
+    const data = [
+        ["№ конфігурації", "Прогін 1",  "Прогін 2",  "Прогін 2",  "Прогін 2"],
+        [true, false, null, 'sheetjs'],
+        ['foo', 'bar', new Date('2014-02-19T14:30Z'), '0.3'],
+        ['baz', null, 'qux']
+    ];
 
-    fs.writeFileSync("a.xlsx", buffer);
+    var buffer = build([{name: "mySheetName", data: data}]); // Returns a buffer
+    writeFileSync("a.xlsx", buffer);
 }
 
 
 
 export function generateRandomPerson(){
-    return Math.round(Math.random() * Number.MAX_SAFE_INTEGER) / 1000;
+    return Math.round(Math.random() * 1e3);
 }
 
 export function randomInteger(min, max) {
@@ -32,18 +44,22 @@ export function getGG(data, constants){
     return GG;
 }
 
-export function getByteArrays(num1, num2){
-    let arr1 = BitArray.parse(num1);
-    let arr2 = BitArray.parse(num2);
-    return normilizeByteArrays(arr1, arr2);
+export function getByteArray(parent1){
+    var parts = parent1
+        .map((num1) => {
+            return normilizeByteArray(BitArray.parse(num1));
+        });
+    return flatten(parts);
 }
 
 export function getNumberFromBytes(arr){
-    return BitArray.toNumber(arr);
+    return chunk(arr, countOfBits)
+        .map(arr => BitArray.toNumber(arr) / 1e3);
 }
 
-export function gemmingDistance(num1, num2){
-    const [arr1, arr2] = getByteArrays(num1, num2);
+export function gemmingDistance(person1, preson2){
+    const arr1 = getByteArray(person1);
+    const arr2 = getByteArray(preson2);
 
     let distance = 0;
 
@@ -55,17 +71,12 @@ export function gemmingDistance(num1, num2){
     return distance;
 }
 
-export function normilizeByteArrays(arr1, arr2) {
-    const length = Math.max(arr1.length, arr2.length);
-    while(arr1.length < length){
+export function normilizeByteArray(arr1) {
+    while(arr1.length < countOfBits){
         arr1.unshift(0);
     }
 
-    while(arr2.length < length){
-        arr2.unshift(0);
-    }
-
-    return [arr1, arr2];
+    return arr1;
 }
 
 
