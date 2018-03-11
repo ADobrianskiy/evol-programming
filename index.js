@@ -37,15 +37,14 @@ function generateData(dimensions) {
 }
 
 const dimension = 1;
-const progons = 10;
-const deba = deba1;
-const filename = "Table__Function_F15__Dim_1(3).xls";
+const progons = 1;
+const filename = "Table__Function_F15__Dim_1.xlsx";
 
 const configs = [
-    //{deba: deba, extender: deba1Extender, p: closestFromTheWorst1},
-    //{deba: deba, extender: deba1Extender, p: closestFromTheWorst2},
-    //{deba: deba, extender: deba1Extender, p: closestFromRandoms},
-    {deba: deba, extender: deba1Extender, p: worstFromTheClosest},
+    {deba: deba1, extender: deba1Extender, p: closestFromTheWorst1},
+    //{deba: deba1, extender: deba1Extender, p: closestFromTheWorst2},
+    //{deba: deba1, extender: deba1Extender, p: closestFromRandoms},
+    //{deba: deba1, extender: deba1Extender, p: worstFromTheClosest},
 ];
 
 const configurations = [];

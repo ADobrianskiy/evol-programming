@@ -4,14 +4,6 @@ import {processReplace} from "./replaceStrategies";
 import {cloneDeep, merge} from "lodash";
 import {getSeeds} from "./statisticHelpers";
 
-var dataSample = {
-    dimensions: 1,
-    populationSize: getPopulationCount(1),
-    population: Array(500).map(() => {
-        return generateRandomPerson()
-    })
-};
-
 const constantsBase = {
     GG: 0.2,
     cf: 3,
@@ -94,17 +86,23 @@ export function stopBecauseOfStatistic(statistic, constants) {
 
 
 export function step(data, constants, execution) {
-    if (execution === 0) console.time('getParents');
+    if (execution === 0)
+        console.time('getParents');
     const parent = getParents(data, constants);
-    if (execution === 0) console.timeEnd('getParents');
+    if (execution === 0)
+        console.timeEnd('getParents');
 
-    if (execution === 0) console.time('getChildrenData');
+    if (execution === 0)
+        console.time('getChildrenData');
     const childrenData = getChildrenData(parent, data, constants);
-    if (execution === 0) console.timeEnd('getChildrenData');
+    if (execution === 0)
+        console.timeEnd('getChildrenData');
 
-    if (execution === 0) console.time('processReplace');
+    if (execution === 0)
+        console.time('processReplace');
     processReplace(data, childrenData, constants);
-    if (execution === 0) console.timeEnd('processReplace');
+    if (execution === 0)
+        console.timeEnd('processReplace');
 
 }
 

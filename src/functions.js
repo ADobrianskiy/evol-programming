@@ -1,4 +1,4 @@
-import {getNumberFromBytes} from "./helpers";
+import {getByteArray, getNumberFromBytes} from "./helpers";
 
 export function deba1(x) {
     return Math.pow(Math.sin(5 * Math.PI * x), 6);
@@ -39,18 +39,29 @@ function basicExtender(statistic, data, constants, globalPicks, localPicks) {
 
     statistic.seeds.forEach(seed => {
         const res = seed.reduce((acc, num) => {
-            const gp = globalPicks.find(e => Math.abs(num - e.x) < maxXDiff && Math.abs(health(constants.deba, seed) - e.y) < maxYDiff);
-            const lp = globalPicks.find(e => Math.abs(num - e.x) < maxXDiff && Math.abs(health(constants.deba, seed) - e.y) < maxYDiff);
-            if(gp) acc.gp++;
-            if(lp) acc.lp++;
+            const gp = globalPicks.find(e => {
+
+                if(Math.abs(num - e.x) < maxXDiff){
+
+                    console.log(seed, e.y);
+                }
+                return Math.abs(num - e.x) < maxXDiff && Math.abs(health(constants.deba, getByteArray(seed.map(e => e * 1000))) - e.y) < maxYDiff
+            });
+            const lp = localPicks.find(e => Math.abs(num - e.x) < maxXDiff && Math.abs(health(constants.deba, getByteArray(seed.map(e => e * 1000))) - e.y) < maxYDiff);
+            if(gp)
+                acc.gp++;
+            else if(lp)
+                acc.lp++;
             return acc;
         }, {gp: 0, lp: 0});
 
-        if (res.gp === seed.length) gp++;
-        if (res.gp + res.lp === seed.length) lp++;
+        if (res.gp === seed.length)
+            gp++;
+        else if (res.gp + res.lp === seed.length) 
+            lp++;
     });
 
-    statistic.nseeds = gp + lp;
+    statistic.nseeds = statistic.seeds.length;
     statistic.np = gp + lp;
     statistic.gp = gp;
     statistic.pr = statistic.np / statistic.nseeds;
@@ -62,6 +73,12 @@ function basicExtender(statistic, data, constants, globalPicks, localPicks) {
     }
 
     statistic.fpr = (statistic.nseeds - statistic.np) / statistic.nseeds;
+
+    Object.keys(statistic).forEach(key => {
+        if(statistic[key] === "undefined" || isNaN(statistic[key])){
+            delete statistic[key];
+        }
+    })
 }
 
 export function deba2(x) {
