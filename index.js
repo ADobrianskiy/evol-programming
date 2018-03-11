@@ -1,8 +1,11 @@
 require("source-map-support").install();
 import {execute} from "./src/executor";
-import {generateRandomPerson, getByteArray, getPopulationCount, writeExcel} from "./src/helpers";
+import {generateRandomPerson, getByteArray, getNumberFromBytes, getPopulationCount, writeExcel} from "./src/helpers";
 import {deba1, deba1Extender} from "./src/functions";
-import {closestFromTheWorst1} from "./src/replaceStrategies";
+import {
+    closestFromRandoms, closestFromTheWorst1, closestFromTheWorst2,
+    worstFromTheClosest
+} from "./src/replaceStrategies";
 import {existsSync, readFileSync, writeFileSync} from "fs";
 
 
@@ -34,10 +37,37 @@ function generateData(dimensions) {
 }
 
 const dimension = 1;
-const testNumber = 1;
-const data = {deba: deba1, p: closestFromTheWorst1, extender: deba1Extender};
+const progons = 10;
+const deba = deba1;
+const filename = "Table__Function_F15__Dim_1(3).xls";
+
+const configs = [
+    //{deba: deba, extender: deba1Extender, p: closestFromTheWorst1},
+    //{deba: deba, extender: deba1Extender, p: closestFromTheWorst2},
+    //{deba: deba, extender: deba1Extender, p: closestFromRandoms},
+    {deba: deba, extender: deba1Extender, p: worstFromTheClosest},
+];
+
+const configurations = [];
+configs.forEach((config, configI)=>{
+    const statistic = [];
+
+    for(let i = 0; i < progons; i++){
+        console.log(`Config: ${configI}, Progon: ${i}`)
+        statistic.push(execute(getData(dimension,i), config));
+        writeFileSync(`out_${configI}_${i}.json`, JSON.stringify(statistic));
+    }
+
+    configurations.push({statistic: statistic});
+});
 
 
-var statistic = execute(getData(dimension,testNumber), data);
+//writeFileSync("tmp.json", JSON.stringify(statistic));
 
-writeExcel([statistic]);
+
+//var statistic = JSON.parse(readFileSync("tmp.json"))
+//var configuration = {statistic: [statistic]};
+
+
+writeExcel(configurations, filename);
+

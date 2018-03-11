@@ -1,4 +1,4 @@
-import {gemmingDistance} from "./helpers";
+import {gemmingDistance, randomInteger} from "./helpers";
 import {health} from "./functions";
 
 export function processReplace(data, childrenData, constants) {
@@ -13,10 +13,9 @@ export function processReplace(data, childrenData, constants) {
     });
 }
 
-export function getPersonIndex(population, person){
-    return population.
-        findIndex((element) => {
-            return element.join() === person.join()
+export function getPersonIndex(population, person) {
+    return population.findIndex((element) => {
+        return element.join() === person.join()
     });
 }
 
@@ -29,6 +28,35 @@ export function closestFromTheWorst1(data, child, constants) {
     return data.population.slice()
         .sort((a, b) => health(constants.deba, a) - health(constants.deba, b))
         .slice(0, constants.cf)
-        .sort((a, b) => gemmingDistance(b, child) - gemmingDistance(a, child))
+        .sort((a, b) => gemmingDistance(a, child) - gemmingDistance(b, child))
+        [0];
+}
+
+export function closestFromTheWorst2(data, child, constants) {
+    return data.population.slice()
+        .sort((a, b) => health(constants.deba, a) - health(constants.deba, b))
+        .slice(0, Math.round(data.population.length / 3))
+        .sort((a, b) => gemmingDistance(a, child) - gemmingDistance(b, child))
+        [0];
+}
+
+export function closestFromRandoms(data, child, constants) {
+    const candidates = [];
+    while(candidates.length < data.population.length / 3){
+        const index = randomInteger(0, data.population.length - 1);
+        candidates.push(data.population[index])
+    }
+    const res = candidates
+        .sort((a, b) => gemmingDistance(a, child) - gemmingDistance(b, child));
+
+    //console.log(gemmingDistance(res[0], child),gemmingDistance(res[res.length-1], child) )
+    return res[0];
+}
+
+export function worstFromTheClosest(data, child, constants) {
+    return data.population.slice()
+        .sort((a, b) => gemmingDistance(a, child) - gemmingDistance(b, child))
+        .slice(0, Math.round(data.population.length / 3))
+        .sort((a, b) => health(constants.deba, a) - health(constants.deba, b))
         [0];
 }

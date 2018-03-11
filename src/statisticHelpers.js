@@ -17,14 +17,14 @@ export function getSeeds(data, constants) {
             return distance(seed, e) > seedDiff;
         });
 
-        seeds.push(getNumberFromBytes(seed));
+        seeds.push(getNumberFromBytes(seed).map(e => e /  1e3));
     }
     return seeds;
 }
 
 export function distance(byte1, byte2) {
-    const p1 = getNumberFromBytes(byte1),
-        p2 = getNumberFromBytes(byte2);
+    const p1 = getNumberFromBytes(byte1).map(e => e /  1e3),
+        p2 = getNumberFromBytes(byte2).map(e => e /  1e3);
     const d = p1.map((e, i) => {
         return Math.pow(e - p2[i], 2)
     })

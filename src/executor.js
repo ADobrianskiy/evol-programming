@@ -44,7 +44,7 @@ export function execute(data, props) {
         step(data, constants, execution);
 
         execution++;
-        console.log(`AVG health for step ${execution}:` ,statistic[statistic.length - 1].avgHealth);
+        //console.log(`AVG health for step ${execution}:` ,statistic[statistic.length - 1].avgHealth);
 
         updateStatistic(statistic, data, constants);
 
@@ -76,8 +76,8 @@ export function getStatistic(data, constants) {
 }
 
 export function expandStatistic(statistic, data, constants, executions) {
-    console.log("expanding statistic")
     statistic.seeds = getSeeds(data, constants);
+    statistic.nseeds = statistic.seeds.length;
     statistic.executions = executions;
     statistic.nfe = data.nfe;
     constants.extender(statistic, data, constants)
