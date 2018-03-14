@@ -31,6 +31,6 @@ app.post('/api/xlsx', function (req, response) {
 
 });
 
-app.listen(80, function () {
-    console.log('Example app listening on port 3000!');
+app.listen(process.env.PORT || 5000, function () {
+    console.log('Example app listening on port ', process.env.PORT || 5000);
 });
