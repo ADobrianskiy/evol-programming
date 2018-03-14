@@ -39,8 +39,12 @@ export function execute(data, props) {
         //console.log(`AVG health for step ${execution}:` ,statistic[statistic.length - 1].avgHealth);
 
         updateStatistic(statistic, data, constants);
-
-        if (execution > constants.maxExecutions) {
+        const N = data.population.length;
+        const NFE = N+ execution * (N * constants.GG);
+        if (execution % 20 === 0) {
+            console.log("Step: ", execution, ", NFE:", NFE, ", AVG Health:", statistic[statistic.length - 1].avgHealth);
+        }
+        if (NFE > constants.maxExecutions) {
             console.log("stop because of iterations");
             const res = expandStatistic(statistic.pop(), data, constants, execution);
             res.reason = "executions";
@@ -71,7 +75,9 @@ export function expandStatistic(statistic, data, constants, executions) {
     statistic.seeds = getSeeds(data, constants);
     statistic.nseeds = statistic.seeds.length;
     statistic.executions = executions;
-    statistic.nfe = data.nfe;
+    const N = data.population.length;
+    const NFE = data.population.length + executions * (N * constants.GG);
+    statistic.nfe = NFE;
     constants.extender(statistic, data, constants)
     return statistic;
 }

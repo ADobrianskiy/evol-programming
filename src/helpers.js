@@ -213,4 +213,19 @@ export function normilizeByteArray(arr1) {
     return arr1;
 }
 
+export function generateData(dimensions) {
+    const sizeOfPopulation = getPopulationCount(dimensions);
+    return {
+        dimensions: dimensions,
+        population: Array(sizeOfPopulation)
+            .fill(0)
+            .map(() => {
+                const person = [];
+                for (var i = 0; i < dimensions; i++) {
+                    person.push(generateRandomPerson())
+                }
+                return getByteArray(person);
+            })
+    }
+}
 

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+</head>
+<body>
+<style>
+    .selectors,
+    .statistic,
+    .statistic .concrete-statistic {
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+    }
+    .selectors > *,
+    .statistic > *,
+    .statistic .concrete-statistic > *{
+        margin: 10px;
+        width: 350px;
+
+    }
+    .selectors input {
+        width: calc(100% - 100px);
+    }
+    .selectors .input-group-prepend label{
+        width: 100px;
+    }
+
+    .statistic input,
+    .statistic .concrete-statistic input
+    {
+        width: calc(100% - 180px);
+    }
+    .statistic .input-group-prepend label,
+    .statistic .concrete-statistic .input-group-prepend label{
+        width: 180px;
+    }
+
+    .statistic-template {
+        display: none;
+    }
+
+    .get-excel{
+        display: none;
+    }
+</style>
+
+<div class="selectors">
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <label class="input-group-text" for="select-function">Function</label>
+        </div>
+        <select class="custom-select" id="select-function">
+            <option value="0" selected>Deba 1</option>
+            <option value="1">Deba 2</option>
+            <option value="2">Deba 3</option>
+            <option value="3">Deba 4</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <label class="input-group-text" for="select-strategy">Strategy</label>
+        </div>
+        <select  value="0" class="custom-select" id="select-strategy">
+            <option value="0" selected>Closest From The Worst 1</option>
+            <option value="1">Closest From The Worst 2</option>
+            <option value="2">Closest From Randoms</option>
+            <option value="3">Worst From The Closest</option>
+        </select>
+    </div>
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <label class="input-group-text" for="input-iterations">Iterations</label>
+        </div>
+        <input type="number" value="1" id="input-iterations">
+    </div>
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <label class="input-group-text" for="input-dimensions">Dimensions</label>
+        </div>
+        <input type="number" value="1" id="input-dimensions">
+    </div>
+    <button class="btn btn-default" onclick="execute()">Let`s go!</button>
+</div>
+
+
+
+
+<div class="statistic">
+
+</div>
+
+<div class="statistic-template" >
+    <button type="button" class="btn btn-primary statistic-expander" data-toggle="collapse" aria-expanded="false">Statistic</button>
+    <div class="statistic-expand collapse">
+        <div class="concrete-statistic">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">NFE</label>
+                </div>
+                <input type="number"  class="input-nfe" readonly>
+            </div>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">NSeeds</label>
+                </div>
+                <input type="number"  class="input-nseeds" readonly>
+            </div>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">NP</label>
+                </div>
+                <input type="number"  class="input-np" readonly>
+            </div>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">GP</label>
+                </div>
+                <input type="number"  class="input-gp" readonly>
+            </div>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">LP</label>
+                </div>
+                <input type="number"  class="input-lp" readonly>
+            </div>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">PR</label>
+                </div>
+                <input type="number"  class="input-pr" readonly>
+            </div>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">GPR</label>
+                </div>
+                <input type="number"  class="input-gpr" readonly>
+            </div>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">LPR</label>
+                </div>
+                <input type="number"  class="input-lpr" readonly>
+            </div>
+
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">FPR</label>
+                </div>
+                <input type="number"  class="input-fpr" readonly>
+            </div>
+
+
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">Reason of stop</label>
+                </div>
+                <input type="text" class="input-reason-of-stop" readonly>
+            </div>
+        </div>
+        <div class="plot-container"></div>
+    </div>
+</div>
+
+
+<button class="get-excel" onclick="getExcel()">Donwload Excel</button>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+<script src="./dist/dist.js"></script>
+<script src="./lib/plotly-latest.min.js"></script>
+</body>
+</html>

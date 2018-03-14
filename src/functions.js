@@ -37,14 +37,13 @@ function basicExtender(statistic, data, constants, globalPicks, localPicks) {
     let lp = 0;
 
 
+    statistic.gps = [];
+    statistic.lps = [];
+    statistic.fps = [];
+
     statistic.seeds.forEach(seed => {
         const res = seed.reduce((acc, num) => {
             const gp = globalPicks.find(e => {
-
-                if(Math.abs(num - e.x) < maxXDiff){
-
-                    console.log(seed, e.y);
-                }
                 return Math.abs(num - e.x) < maxXDiff && Math.abs(health(constants.deba, getByteArray(seed.map(e => e * 1000))) - e.y) < maxYDiff
             });
             const lp = localPicks.find(e => Math.abs(num - e.x) < maxXDiff && Math.abs(health(constants.deba, getByteArray(seed.map(e => e * 1000))) - e.y) < maxYDiff);
@@ -55,10 +54,15 @@ function basicExtender(statistic, data, constants, globalPicks, localPicks) {
             return acc;
         }, {gp: 0, lp: 0});
 
-        if (res.gp === seed.length)
+        if (res.gp === seed.length) {
             gp++;
-        else if (res.gp + res.lp === seed.length) 
+            statistic.gps.push(seed);
+        } else if (res.gp + res.lp === seed.length) {
             lp++;
+            statistic.lps.push(seed);
+        } else {
+            statistic.fps.push(seed);
+        }
     });
 
     statistic.nseeds = statistic.seeds.length;
@@ -75,7 +79,7 @@ function basicExtender(statistic, data, constants, globalPicks, localPicks) {
     statistic.fpr = (statistic.nseeds - statistic.np) / statistic.nseeds;
 
     Object.keys(statistic).forEach(key => {
-        if(statistic[key] === "undefined" || isNaN(statistic[key])){
+        if(statistic[key] === "undefined" || (isNaN(statistic[key]) && typeof statistic[key] === "number")){
             delete statistic[key];
         }
     })
@@ -98,6 +102,12 @@ const cache = {
 
 };
 
+export function numberHealth(deba, values){
+    return values.map(x => deba(x))
+            .reduce((a, b) => a + b)
+        / values.length;
+}
+
 export function health(deba, bytes) {
     const id = deba.name + bytes.join();
     if(cache[id]) {
@@ -105,9 +115,8 @@ export function health(deba, bytes) {
     }
 
     const xs = getNumberFromBytes(bytes).map(e => e /  1e3);
-    const res = xs.map(x => deba(x))
-            .reduce((a, b) => a + b)
-        / xs.length;
+    const res = numberHealth(deba, xs);
+
     cache[id] = res;
 
     return res;

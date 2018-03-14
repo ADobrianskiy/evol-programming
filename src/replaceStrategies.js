@@ -42,7 +42,7 @@ export function closestFromTheWorst2(data, child, constants) {
 
 export function closestFromRandoms(data, child, constants) {
     const candidates = [];
-    while(candidates.length < data.population.length / 3){
+    while(candidates.length < constants.cf){
         const index = randomInteger(0, data.population.length - 1);
         candidates.push(data.population[index])
     }
@@ -56,7 +56,7 @@ export function closestFromRandoms(data, child, constants) {
 export function worstFromTheClosest(data, child, constants) {
     return data.population.slice()
         .sort((a, b) => gemmingDistance(a, child) - gemmingDistance(b, child))
-        .slice(0, Math.round(data.population.length / 3))
+        .slice(0, constants.cf)
         .sort((a, b) => health(constants.deba, a) - health(constants.deba, b))
         [0];
 }

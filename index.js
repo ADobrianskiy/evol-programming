@@ -1,7 +1,12 @@
+import {draw3dChart, drawChart} from "./src/charts";
+
 require("source-map-support").install();
 import {execute} from "./src/executor";
-import {generateRandomPerson, getByteArray, getNumberFromBytes, getPopulationCount, writeExcel} from "./src/helpers";
-import {deba1, deba1Extender} from "./src/functions";
+import {
+    generateData, generateRandomPerson, getByteArray, getNumberFromBytes, getPopulationCount,
+    writeExcel
+} from "./src/helpers";
+import {deba1, deba1Extender, numberHealth} from "./src/functions";
 import {
     closestFromRandoms, closestFromTheWorst1, closestFromTheWorst2,
     worstFromTheClosest
@@ -20,25 +25,9 @@ function getData(dimensions, testNumber) {
     }
 }
 
-function generateData(dimensions) {
-    const sizeOfPopulation = getPopulationCount(dimensions);
-    return {
-        dimensions: dimensions,
-        population: Array(sizeOfPopulation)
-            .fill(0)
-            .map(() => {
-                const person = [];
-                for (var i = 0; i < dimensions; i++) {
-                    person.push(generateRandomPerson())
-                }
-                return getByteArray(person);
-            })
-    }
-}
-
-const dimension = 1;
-const progons = 1;
-const filename = "Table__Function_F15__Dim_1.xlsx";
+const dimension = 2;
+const progons = 10;
+const filename = "Table__Function_F15__Dim_3.xlsx";
 
 const configs = [
     {deba: deba1, extender: deba1Extender, p: closestFromTheWorst1},
@@ -47,26 +36,25 @@ const configs = [
     //{deba: deba1, extender: deba1Extender, p: worstFromTheClosest},
 ];
 
-const configurations = [];
-configs.forEach((config, configI)=>{
-    const statistic = [];
+function main(){
+    const configurations = [];
+    configs.forEach((config, configI)=>{
+        const statistic = [];
 
-    for(let i = 0; i < progons; i++){
-        console.log(`Config: ${configI}, Progon: ${i}`)
-        statistic.push(execute(getData(dimension,i), config));
-        writeFileSync(`out_${configI}_${i}.json`, JSON.stringify(statistic));
-    }
+        for(let i = 0; i < progons; i++){
+            console.log(`Config: ${configI}, Progon: ${i}`)
+            statistic.push(execute(getData(dimension,i), config));
+            writeFileSync(`out/out_${configI}_${i}.json`, JSON.stringify(statistic));
+        }
 
-    configurations.push({statistic: statistic});
-});
+        configurations.push({statistic: statistic});
+    });
+    writeExcel(configurations, filename);
+}
 
-
-//writeFileSync("tmp.json", JSON.stringify(statistic));
-
-
-//var statistic = JSON.parse(readFileSync("tmp.json"))
-//var configuration = {statistic: [statistic]};
-
-
-writeExcel(configurations, filename);
-
+//const data = execute(getData(dimension,0), configs[0]);
+//writeFileSync(`out/out_.json`, JSON.stringify(data));
+const data = JSON.parse(readFileSync(`out/out_.json`));
+if(dimension === 2){
+    draw3dChart(numberHealth.bind(null, deba1),0,1, data , "chart1.png");
+}
