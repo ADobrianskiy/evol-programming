@@ -1,4 +1,4 @@
-import {getByteArray, getNumberFromBytes} from "./helpers";
+import {distanceBetweenPoints, getByteArray, getNumberFromBytes} from "./helpers";
 
 export function deba1(x) {
     return Math.pow(Math.sin(5 * Math.PI * x), 6);
@@ -43,21 +43,38 @@ function basicExtender(statistic, data, constants, globalPicks, localPicks) {
 
     statistic.seeds.forEach(seed => {
         const res = seed.reduce((acc, num) => {
+            let x = num;
             const gp = globalPicks.find(e => {
-                return Math.abs(num - e.x) < maxXDiff && Math.abs(health(constants.deba, getByteArray(seed.map(e => e * 1000))) - e.y) < maxYDiff
+                if(Math.abs(num - e.x) < maxXDiff){
+                    x = e.x;
+                }
+                return Math.abs(num - e.x) < maxXDiff;// && Math.abs(health(constants.deba, getByteArray(seed.map(e => e * 1000))) - e.y) < maxYDiff
             });
-            const lp = localPicks.find(e => Math.abs(num - e.x) < maxXDiff && Math.abs(health(constants.deba, getByteArray(seed.map(e => e * 1000))) - e.y) < maxYDiff);
-            if(gp)
+            const lp = localPicks.find(e => {
+                if(Math.abs(num - e.x) < maxXDiff){
+                    x = e.x;
+                }
+                return Math.abs(num - e.x) < maxXDiff;
+            });// && Math.abs(health(constants.deba, getByteArray(seed.map(e => e * 1000))) - e.y) < maxYDiff);
+            if(gp) {
                 acc.gp++;
-            else if(lp)
+            } else if(lp) {
                 acc.lp++;
+            }
+            acc.x.push(x);
             return acc;
-        }, {gp: 0, lp: 0});
+        }, {gp: 0, lp: 0, x: []});
 
-        if (res.gp === seed.length) {
+        console.log(distanceBetweenPoints(seed, res.x), seed, res.x);
+        const xDistOk = distanceBetweenPoints(seed, res.x) < maxXDiff;
+
+        const h1 = health(constants.deba, getByteArray(seed.map(e => e * 1000)));
+        const h2 = health(constants.deba, getByteArray(res.x.map(e => e * 1000)));
+        const yDistOk = Math.abs(h1 - h2) < maxYDiff;
+        if (res.gp === seed.length && xDistOk &&yDistOk) {
             gp++;
             statistic.gps.push(seed);
-        } else if (res.gp + res.lp === seed.length) {
+        } else if (res.gp + res.lp === seed.length && xDistOk &&yDistOk) {
             lp++;
             statistic.lps.push(seed);
         } else {

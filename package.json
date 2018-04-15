@@ -27,6 +27,7 @@
     "node-xlsx": "^0.11.2",
     "plotly": "^1.0.6",
     "plotty": "^0.2.0",
+    "shelljs": "^0.8.1",
     "unique-string": "^1.0.0"
   }
 }

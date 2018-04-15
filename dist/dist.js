@@ -49199,11 +49199,10 @@ function applyCossengover(arr1, arr2, p) {
 
 function applyMutation(arr, p) {
     arr = arr.slice();
-    arr.forEach(function (el, index) {
-        if (Math.random() < p) {
-            arr[index] = arr[index] === 0 ? 1 : 0;
-        }
-    });
+    if (Math.random() < p) {
+        var i = _helpers.randomInteger(arr.length - 1);
+        arr[i] = arr[i] === 0 ? 1 : 0;
+    }
     return arr;
 }
 

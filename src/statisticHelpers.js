@@ -27,7 +27,7 @@ export function distance(byte1, byte2) {
         p2 = getNumberFromBytes(byte2).map(e => e /  1e3);
     const d = p1.map((e, i) => {
         return Math.pow(e - p2[i], 2)
-    })
+    });
     const k = d.reduce((a, b) => a + b);
     return Math.sqrt(k);
 }

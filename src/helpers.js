@@ -103,7 +103,9 @@ export function writeExcel(configurations, filename) {
 
     configurations.forEach((configuration, configIndex) => {
         configuration.statistic.forEach((stat, proginN) => {
-            addStatHeaders(data, "Прогін " + proginN, ranges);
+            if (configIndex === 0) {
+                addStatHeaders(data, "Прогін " + proginN, ranges);
+            }
             addStatistic(data, configIndex, stat);
         });
     });
@@ -113,7 +115,6 @@ export function writeExcel(configurations, filename) {
             addStatHeaders(data, "Середнє по всіх прогонах", ranges);
             addStatHeaders(data, "Найкраще по всіх прогонах", ranges);
             data[0].push("SucRuns, %");
-
         }
 
         addAVGStatistic(data, configuration.statistic, configIndex);
@@ -203,6 +204,15 @@ export function gemmingDistance(person1, preson2) {
         }
     }
     return distance;
+}
+
+export function distanceBetweenPoints(point1, point2) {
+    point1 = point1.slice();
+    return Math.sqrt(
+        point1.reduce((a, b, i) => {
+            return Math.pow(point1[i] - point2[i], 2) + a;
+        }, 0)
+    );
 }
 
 export function normilizeByteArray(arr1) {

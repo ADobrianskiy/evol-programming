@@ -3,16 +3,47 @@ import {health} from "./functions";
 import {concat} from "lodash";
 
 export function getParents(data, constants) {
-    const population = data.population.slice();
+    const population = data.population.map((a) => {
+        return {
+            person: a,
+            health: health(constants.deba, a)
+        }
+    });
+    const totalHealth = population.reduce((a, b) => {
+        return a + b.health;
+    }, 0);
+
+    let prc = 0;
+    population.forEach((a) => {
+        prc = a.prc = prc + a.health / totalHealth;
+    });
     const GG = getGG(data, constants);
     return Array(GG / 2)
         .fill(0)
         .map(() => {
-            const index1 = randomInteger(0, population.length - 1);
-            const parent1 = population.splice(index1, 1)[0];
+            const r1 = Math.random();
+            let parent1;
+            population.some(a => {
+                if (a.prc <= r1) {
+                    parent1 = a.person;
+                }
+                return a.prc <= r1;
+            });
+            if (!parent1) {
+                parent1 = population[population.length - 1].person;
+            }
 
-            const index2 = randomInteger(0, population.length - 1);
-            const parent2 = population.splice(index2, 1)[0];
+            const r2 = Math.random();
+            let parent2;
+            population.some(a => {
+                if (a.prc <= r2) {
+                    parent2 = a.person;
+                }
+                return a.prc <= r1;
+            });
+            if (!parent2) {
+                parent2 = population[population.length - 1].person;
+            }
 
             return {
                 parent1,
@@ -56,11 +87,10 @@ export function applyCossengover(arr1, arr2, p) {
 
 export function applyMutation(arr, p) {
     arr = arr.slice();
-    arr.forEach((el, index) => {
-        if (Math.random() < p) {
-            arr[index] = arr[index] === 0 ? 1 : 0;
-        }
-    });
+    if (Math.random() < p) {
+        const index = randomInteger(0, arr.length - 1);
+        arr[index] = arr[index] === 0 ? 1 : 0;
+    }
     return arr;
 }
 

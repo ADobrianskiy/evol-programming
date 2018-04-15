@@ -23,12 +23,6 @@ export function execute(data, props) {
     const statistic = [];
     const constants = merge(constantsBase, props);
     let execution = 0;
-    data.nfe = 0;
-    const deba = constants.deba;
-    constants.deba = (x) => {
-        data.nfe++;
-        return deba(x);
-    };
 
     updateStatistic(statistic, data, constants);
 
