@@ -63,7 +63,6 @@ function addStatistic(statistic, dimensions, i, funct) {
     row.find(".statistic-expander").attr("data-target", "#statistic-" + i);
     row.find(".statistic-expand").attr("id", "statistic-" + i);
 
-    console.log("here");
     row.find(".input-nfe").val(statistic.nfe);
     row.find(".input-nseeds").val(statistic.nseeds);
     row.find(".input-np").val(statistic.np);

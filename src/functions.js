@@ -65,7 +65,6 @@ function basicExtender(statistic, data, constants, globalPicks, localPicks) {
             return acc;
         }, {gp: 0, lp: 0, x: []});
 
-        console.log(distanceBetweenPoints(seed, res.x), seed, res.x);
         const xDistOk = distanceBetweenPoints(seed, res.x) < maxXDiff;
 
         const h1 = health(constants.deba, getByteArray(seed.map(e => e * 1000)));

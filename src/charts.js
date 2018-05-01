@@ -89,19 +89,23 @@ export function computeChartData(funct, min, max, statistic){
 
 
 export function draw3dChart(funct, min, max, statistic, name){
-    const figure = compute3dChartData(funct, min, max, statistic);
-    const imgOpts = {
-        format: 'png',
-        width: 1000,
-        height: 500
-    };
+    return new Promise((resolve) => {
+        const figure = compute3dChartData(funct, min, max, statistic);
+        const imgOpts = {
+            format: 'png',
+            width: 1000,
+            height: 500
+        };
 
-    plotly.getImage(figure, imgOpts, function (error, imageStream) {
-        if (error) return console.log (error);
+        plotly.getImage(figure, imgOpts, function (error, imageStream) {
+            if (error) return console.log (error);
 
-        var fileStream = fs.createWriteStream(name);
-        imageStream.pipe(fileStream);
+            var fileStream = fs.createWriteStream(name);
+            imageStream.pipe(fileStream);
+            resolve();
+        });
     });
+
 }
 export function draw3dBrowserChart(funct, min, max, statistic, container){
     const figure = compute3dChartData(funct, min, max, statistic);
@@ -156,8 +160,8 @@ export function compute3dChartData(funct, min, max, statistic){
     };
     statistic.lps.forEach((seed)=>{
         localPicks.x.push(seed[0]);
-        localPicks.y.push(funct(seed[1]))
-        localPicks.z.push(funct(seed))
+        localPicks.y.push(seed[1]);
+        localPicks.z.push(funct(seed));
     });
 
     var incorrectPicks = {

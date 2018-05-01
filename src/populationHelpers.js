@@ -24,12 +24,13 @@ export function getParents(data, constants) {
             const r1 = Math.random();
             let parent1;
             population.some(a => {
-                if (a.prc <= r1) {
+                if (r1 <= a.prc) {
                     parent1 = a.person;
                 }
-                return a.prc <= r1;
+                return r1 <= a.prc;
             });
             if (!parent1) {
+                console.log("Whaaat?: ", population[population.length - 1].prc, r1)
                 parent1 = population[population.length - 1].person;
             }
 
