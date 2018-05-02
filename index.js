@@ -33,28 +33,28 @@ const progons = 1;
 
 const configs = [
     {deba: deba1, extender: deba1Extender, p: closestFromTheWorst1},
-    //{deba: deba1, extender: deba1Extender, p: closestFromTheWorst2},
+    {deba: deba1, extender: deba1Extender, p: closestFromTheWorst2},
     {deba: deba1, extender: deba1Extender, p: closestFromRandoms},
-    //{deba: deba1, extender: deba1Extender, p: worstFromTheClosest},
+    {deba: deba1, extender: deba1Extender, p: worstFromTheClosest},
 
     {deba: deba2, extender: deba2Extender, p: closestFromTheWorst1},
-    //{deba: deba2, extender: deba2Extender, p: closestFromTheWorst2},
+    {deba: deba2, extender: deba2Extender, p: closestFromTheWorst2},
     {deba: deba2, extender: deba2Extender, p: closestFromRandoms},
-    //{deba: deba2, extender: deba2Extender, p: worstFromTheClosest},
+    {deba: deba2, extender: deba2Extender, p: worstFromTheClosest},
 
     {deba: deba3, extender: deba3Extender, p: closestFromTheWorst1},
-    //{deba: deba3, extender: deba3Extender, p: closestFromTheWorst2},
+    {deba: deba3, extender: deba3Extender, p: closestFromTheWorst2},
     {deba: deba3, extender: deba3Extender, p: closestFromRandoms},
-   // {deba: deba3, extender: deba3Extender, p: worstFromTheClosest},
+    {deba: deba3, extender: deba3Extender, p: worstFromTheClosest},
 
     {deba: deba4, extender: deba4Extender, p: closestFromTheWorst1},
-    //{deba: deba4, extender: deba4Extender, p: closestFromTheWorst2},
+    {deba: deba4, extender: deba4Extender, p: closestFromTheWorst2},
     {deba: deba4, extender: deba4Extender, p: closestFromRandoms},
-    //{deba: deba4, extender: deba4Extender, p: worstFromTheClosest},
+    {deba: deba4, extender: deba4Extender, p: worstFromTheClosest},
 ];
 
 (async function main() {
-    for (var dimension = 4; dimension <= 5; dimension++) {
+    for (var dimension = 1; dimension <= 3; dimension++) {
         const stat = {};
         for(var configI = 0; configI < configs.length; configI++){
             var config = configs[configI];

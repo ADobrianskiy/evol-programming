@@ -98,5 +98,5 @@ export function applyMutation(arr, p) {
 export function getAvgHealth(population, deba) {
     return population
         .map(e => health(deba, e))
-        .reduce((a, b) => a + b)
+        .reduce((a, b) => a + b) / population.length;
 }

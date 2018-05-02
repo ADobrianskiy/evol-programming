@@ -43,11 +43,9 @@ export function closestFromTheWorst1(data, child, constants) {
 }
 
 export function closestFromTheWorst2(data, child, constants) {
-    console.time("closestFromTheWorst2");
     var a = data.population
         .slice(0, Math.round(data.population.length / 3))
         .sort((a, b) => gemmingDistance(a, child) - gemmingDistance(b, child));
-    console.time("closestFromTheWorst2");
 
     return a[0];
 }
@@ -60,7 +58,7 @@ export function closestFromTheWorst2(data, child, constants) {
  * @returns {*}
  */
 export function closestFromRandoms(data, child, constants) {
-    console.time("closestFromRandoms");
+    //console.time("closestFromRandoms");
     const candidates = [];
     while(candidates.length < constants.cf){
         const index = randomInteger(0, data.population.length - 1);
@@ -70,17 +68,17 @@ export function closestFromRandoms(data, child, constants) {
         .sort((a, b) => gemmingDistance(a, child) - gemmingDistance(b, child));
 
     //console.log(gemmingDistance(res[0], child),gemmingDistance(res[res.length-1], child) )
-    console.timeEnd("closestFromRandoms");
+    //console.timeEnd("closestFromRandoms");
     return res[0];
 }
 
 export function worstFromTheClosest(data, child, constants) {
-    console.time("worstFromTheClosest");
+    //console.time("worstFromTheClosest");
     const a = data.population
         .sort((a, b) => gemmingDistance(a, child) - gemmingDistance(b, child))
         .slice(0, constants.cf)
         .sort((a, b) => health(constants.deba, a) - health(constants.deba, b));
 
-    console.timeEnd("worstFromTheClosest");
+    //console.timeEnd("worstFromTheClosest");
     return a[0];
 }
