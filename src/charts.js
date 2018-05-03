@@ -9,19 +9,23 @@ export function drawBrowserChart(funct, min, max, statistic, container){
 }
 
 export function drawChart(funct, min, max, statistic, name){
-    const figure = computeChartData(funct, min, max, statistic);
-    const imgOpts = {
-        format: 'png',
-        width: 1000,
-        height: 500
-    };
+    return new Promise((resolve) => {
+        const figure = computeChartData(funct, min, max, statistic);
+        const imgOpts = {
+            format: 'png',
+            width: 1000,
+            height: 500
+        };
 
-    plotly.getImage(figure, imgOpts, function (error, imageStream) {
-        if (error) return console.log (error);
+        plotly.getImage(figure, imgOpts, function (error, imageStream) {
+            if (error) return console.log (error);
 
-        var fileStream = fs.createWriteStream(name);
-        imageStream.pipe(fileStream);
-    });
+            var fileStream = fs.createWriteStream(name);
+            imageStream.pipe(fileStream);
+            resolve();
+        });
+    })
+
 }
 
 export function computeChartData(funct, min, max, statistic){

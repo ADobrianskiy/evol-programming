@@ -119,21 +119,16 @@ const cache = {
 };
 
 export function numberHealth(deba, values){
-    return values.map(x => deba(x))
+    return values.map(x => deba(Math.min(x, 1)))
             .reduce((a, b) => a + b)
         / values.length;
 }
 
 export function health(deba, bytes) {
-    const id = deba.name + bytes.join();
-    if(cache[id]) {
-        return cache[id];
-    }
 
     const xs = getNumberFromBytes(bytes).map(e => e /  1e3);
     const res = numberHealth(deba, xs);
 
-    cache[id] = res;
 
     return res;
 }

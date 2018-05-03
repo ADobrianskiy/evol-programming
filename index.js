@@ -29,7 +29,7 @@ function getData(dimensions, testNumber) {
     }
 }
 
-const progons = 1;
+const progons = 10;
 
 const configs = [
     {deba: deba1, extender: deba1Extender, p: closestFromTheWorst1},
@@ -76,9 +76,28 @@ const configs = [
 
                 if (!existsSync(file + ".png")) {
                     if (dimension === 1) {
-                        drawChart(config.deba, 0, 1, res, file + ".png");
+                        try{
+                            try{
+                                await drawChart(config.deba, 0, 1, res, file + ".png");
+                            } catch(e){
+                                console.error(e);
+                                await drawChart(config.deba, 0, 1, res, file + ".png");
+                            }
+                        } catch(e){
+                            console.error(e);
+                        }
+
                     } else if (dimension === 2) {
-                        await draw3dChart(numberHealth.bind(null, config.deba), 0, 1, res, file + ".png");
+                        try{
+                            try{
+                                await draw3dChart(numberHealth.bind(null, config.deba), 0, 1, res, file + ".png");
+                            } catch(e){
+                                console.error(e);
+                                await draw3dChart(numberHealth.bind(null, config.deba), 0, 1, res, file + ".png");
+                            }
+                        } catch(e){
+                            console.error(e);
+                        }
                     }
                 }
 

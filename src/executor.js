@@ -10,7 +10,7 @@ const constantsBase = {
     pc: 1,
     pm: 0.2,
     maxExecutions: 20000000,
-    minHealthDiff: 0.001,
+    minHealthDiff: 0.0001,
     maxStatisticStorage: 10
 };
 
@@ -77,12 +77,12 @@ export function expandStatistic(statistic, data, constants, executions) {
 }
 
 export function stopBecauseOfStatistic(statistic, constants) {
-    if (statistic.length === constants.maxStatisticStorage) {
+    if (statistic.length === constants.maxStatisticStorage && Math.abs(statistic[0].avgHealth - statistic[statistic.length - 1].avgHealth) <= constants.minHealthDiff) {
         var stop = true;
-        var diff = []
+        var diff = [];
         for(var i = 1; i < statistic.length; i++){
             diff.push(Math.abs(statistic[i].avgHealth - statistic[i - 1].avgHealth));
-            if(Math.abs(statistic[i].avgHealth - statistic[i - 1].avgHealth) > constants.minHealthDiff){
+            if(Math.abs(statistic[i].avgHealth - statistic[i - 1].avgHealth) > 0.01){
                 stop = false;
             }
         }

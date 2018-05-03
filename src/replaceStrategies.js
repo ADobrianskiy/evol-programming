@@ -1,8 +1,10 @@
 import {gemmingDistance, randomInteger} from "./helpers";
 import {health} from "./functions";
 
-export function processReplace(data, childrenData, constants) {data.population.slice()
-    data.population.sort((a, b) => health(constants.deba, a) - health(constants.deba, b));
+export function processReplace(data, childrenData, constants) {
+    if(constants.p !== closestFromRandoms){
+        data.population.sort((a, b) => health(constants.deba, a) - health(constants.deba, b));
+    }
     childrenData.forEach(({children: {child1, child2}}) => {
         // Replace child 1
         const parentToReplace1 = constants.p(data, child1, constants);
@@ -67,9 +69,13 @@ export function closestFromRandoms(data, child, constants) {
     const res = candidates
         .sort((a, b) => gemmingDistance(a, child) - gemmingDistance(b, child));
 
+    if(health(constants.deba, res[0]) < health(constants.deba, child)){
+        return res[0];
+    } else {
+        return child;
+    }
     //console.log(gemmingDistance(res[0], child),gemmingDistance(res[res.length-1], child) )
     //console.timeEnd("closestFromRandoms");
-    return res[0];
 }
 
 export function worstFromTheClosest(data, child, constants) {
