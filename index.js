@@ -54,7 +54,7 @@ const configs = [
 ];
 
 (async function main() {
-    for (var dimension = 1; dimension <= 3; dimension++) {
+    for (var dimension = 1; dimension <= 5; dimension++) {
         const stat = {};
         for(var configI = 0; configI < configs.length; configI++){
             var config = configs[configI];
@@ -78,10 +78,10 @@ const configs = [
                     if (dimension === 1) {
                         try{
                             try{
-                                await drawChart(config.deba, 0, 1, res, file + ".png");
+                               // await drawChart(config.deba, 0, 1, res, file + ".png");
                             } catch(e){
                                 console.error(e);
-                                await drawChart(config.deba, 0, 1, res, file + ".png");
+                                //await drawChart(config.deba, 0, 1, res, file + ".png");
                             }
                         } catch(e){
                             console.error(e);
@@ -90,10 +90,10 @@ const configs = [
                     } else if (dimension === 2) {
                         try{
                             try{
-                                await draw3dChart(numberHealth.bind(null, config.deba), 0, 1, res, file + ".png");
+                                //await draw3dChart(numberHealth.bind(null, config.deba), 0, 1, res, file + ".png");
                             } catch(e){
                                 console.error(e);
-                                await draw3dChart(numberHealth.bind(null, config.deba), 0, 1, res, file + ".png");
+                                //await draw3dChart(numberHealth.bind(null, config.deba), 0, 1, res, file + ".png");
                             }
                         } catch(e){
                             console.error(e);
