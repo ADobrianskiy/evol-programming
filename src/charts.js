@@ -88,6 +88,10 @@ export function computeChartData(funct, min, max, statistic){
 }
 
 
+export function draw3dBrowserChart(funct, min, max, statistic, container){
+    const figure = compute3dChartData(funct, min, max, statistic);
+    Plotly.plot( container, figure);
+}
 export function draw3dChart(funct, min, max, statistic, name){
     return new Promise((resolve) => {
         const figure = compute3dChartData(funct, min, max, statistic);
@@ -105,13 +109,7 @@ export function draw3dChart(funct, min, max, statistic, name){
             resolve();
         });
     });
-
 }
-export function draw3dBrowserChart(funct, min, max, statistic, container){
-    const figure = compute3dChartData(funct, min, max, statistic);
-    Plotly.plot( container, figure);
-}
-
 export function compute3dChartData(funct, min, max, statistic){
     const step = 0.01;
     const trace = {
@@ -184,6 +182,109 @@ export function compute3dChartData(funct, min, max, statistic){
         incorrectPicks.x.push(seed[0]);
         incorrectPicks.y.push(seed[1]);
         incorrectPicks.z.push(funct(seed));
+    });
+
+    const figure = { 'data': [trace, globalPicks, localPicks, incorrectPicks] };
+    return figure;
+}
+
+
+
+
+
+
+
+
+export function draw3dChart2(funct, statistic, name, minX1, minX2, maxX1, maxX2){
+    return new Promise((resolve) => {
+        const figure = compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2);
+        const imgOpts = {
+            format: 'png',
+            width: 1000,
+            height: 500
+        };
+
+        plotly.getImage(figure, imgOpts, function (error, imageStream) {
+            if (error) return console.log (error);
+
+            var fileStream = fs.createWriteStream(name);
+            imageStream.pipe(fileStream);
+            resolve();
+        });
+    });
+}
+export function compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2){
+    const step = 0.01;
+    const trace = {
+        x: [],
+        y: [],
+        z: [],
+        type: "surface",
+        name: "Function",
+        width: 1,
+        height: 1,
+    };
+
+    for(let x1 = minX1; x1 <= maxX1; x1 = x1+step){
+        trace.x.push([]);
+        trace.y.push([]);
+        trace.z.push([]);
+        for(let x2 = minX2; x2 <= maxX2; x2 = x2+step){
+            trace.x[trace.x.length-1].push(x1);
+            trace.y[trace.y.length-1].push(x2);
+            trace.z[trace.z.length-1].push(funct(x1,x2));
+        }
+    }
+
+    var globalPicks = {
+        x: [],
+        y:[],
+        z:[],
+        mode: "markers",
+        type: "scatter3d",
+        name: "Global Picks Seeds",
+    };
+
+    statistic.gps.forEach((seed)=>{
+        globalPicks.x.push(seed[0]);
+        globalPicks.y.push(seed[1]);
+        globalPicks.z.push(funct(seed[0],seed[1]))
+    });
+
+    var localPicks = {
+        x: [],
+        y:[],
+        z:[],
+        mode: "markers",
+        type: 'scatter3d',
+        name: "Local Picks Seeds",
+    };
+    statistic.lps.forEach((seed)=>{
+        localPicks.x.push(seed[0]);
+        localPicks.y.push(seed[1]);
+        localPicks.z.push(funct(seed[0],seed[1]));
+    });
+
+    var incorrectPicks = {
+        x: [],
+        y:[],
+        z:[],
+        mode: "markers",
+        marker: {
+            color: "rgba(0, 0, 0, 0)",
+            size: 12,
+            line: {
+                color: "black",
+                width: 4
+            }
+        },
+        name: "Wrong Pick Seeds",
+        type: "scatter3d"
+    };
+    statistic.fps.forEach((seed)=>{
+        incorrectPicks.x.push(seed[0]);
+        incorrectPicks.y.push(seed[1]);
+        incorrectPicks.z.push(funct(seed[0],seed[1]));
     });
 
     const figure = { 'data': [trace, globalPicks, localPicks, incorrectPicks] };

@@ -1,4 +1,4 @@
-import {draw3dChart, drawChart} from "./src/charts";
+import {draw3dChart, draw3dChart2, drawChart} from "./src/charts";
 
 require("source-map-support").install();
 import {execute} from "./src/executor";
@@ -7,7 +7,9 @@ import {
     writeExcel
 } from "./src/helpers";
 import {
-    deba1, deba1Extender, deba2, deba2Extender, deba3, deba3Extender, deba4, deba4Extender,
+    deba1, deba1Extender, deba2, deba2Extender, deba3, deba3Extender, deba4, deba4Extender, debaHealth, f43,
+    f43Extender, f46,
+    f46Extender, f46Health, f46X1Denorm, f46X1Norm, f46X2Denorm, f46X2Norm,
     numberHealth
 } from "./src/functions";
 import {
@@ -19,20 +21,117 @@ import {existsSync, readFileSync, writeFileSync} from "fs";
 var shell = require('shelljs');
 
 function getData(dimensions, testNumber) {
-    const path = `./data/${dimensions}_${testNumber}.json`
+    const path = `./data/${dimensions}_${testNumber}.json`;
     if (existsSync(path)) {
         return JSON.parse(readFileSync(path));
     } else {
         const data = generateData(dimensions);
-        writeFileSync(path, JSON.stringify(data))
+        writeFileSync(path, JSON.stringify(data));
         return data;
     }
 }
 
-const progons = 1;
+const progons = 3;
 
 const configs = [
-    {deba: deba1, extender: deba1Extender, p: closestFromTheWorst1},
+    {
+        deba: f43,
+        extender: f43Extender,
+        p: closestFromTheWorst1,
+        health: f46Health,
+        x1Min: -3,
+        x2Min: -3,
+        x1Max: 3,
+        x2Max: 3,
+        x1Norm: f46X1Norm,
+        x2Norm: f46X1Norm,
+        x1Denorm: f46X1Denorm,
+        x2Denorm: f46X1Denorm
+    },{
+        deba: f43,
+        extender: f43Extender,
+        p: closestFromTheWorst2,
+        health: f46Health,
+        x1Min: -3,
+        x2Min: -3,
+        x1Max: 3,
+        x2Max: 3,
+        x1Norm: f46X1Norm,
+        x2Norm: f46X1Norm,
+        x1Denorm: f46X1Denorm,
+        x2Denorm: f46X1Denorm
+    },
+    {
+        deba: f43,
+        extender: f43Extender,
+        p: worstFromTheClosest,
+        health: f46Health,
+        x1Min: -3,
+        x2Min: -3,
+        x1Max: 3,
+        x2Max: 3,
+        x1Norm: f46X1Norm,
+        x2Norm: f46X1Norm,
+        x1Denorm: f46X1Denorm,
+        x2Denorm: f46X1Denorm
+    },
+    {
+        deba: f46,
+        extender: f46Extender,
+        p: closestFromTheWorst1,
+        health: f46Health,
+        x1Min: -3,
+        x2Min: -2,
+        x1Max: 3,
+        x2Max: 2,
+        x1Norm: f46X1Norm,
+        x2Norm: f46X2Norm,
+        x1Denorm: f46X1Denorm,
+        x2Denorm: f46X2Denorm
+    },
+    {
+        deba: f46,
+        extender: f46Extender,
+        p: closestFromTheWorst2,
+        health: f46Health,
+        x1Min: -3,
+        x2Min: -2,
+        x1Max: 3,
+        x2Max: 2,
+        x1Norm: f46X1Norm,
+        x2Norm: f46X2Norm,
+        x1Denorm: f46X1Denorm,
+        x2Denorm: f46X2Denorm
+    },
+    {
+        deba: f46,
+        extender: f46Extender,
+        p: worstFromTheClosest,
+        health: f46Health,
+        x1Min: -3,
+        x2Min: -2,
+        x1Max: 3,
+        x2Max: 2,
+        x1Norm: f46X1Norm,
+        x2Norm: f46X2Norm,
+        x1Denorm: f46X1Denorm,
+        x2Denorm: f46X2Denorm
+    },
+    {
+        deba: f46,
+        extender: f46Extender,
+        p: closestFromRandoms,
+        health: f46Health,
+        x1Min: -3,
+        x2Min: -2,
+        x1Max: 3,
+        x2Max: 2,
+        x1Norm: f46X1Norm,
+        x2Norm: f46X2Norm,
+        x1Denorm: f46X1Denorm,
+        x2Denorm: f46X2Denorm
+    }
+    /*{deba: deba1, extender: deba1Extender, p: closestFromTheWorst1},
     {deba: deba1, extender: deba1Extender, p: closestFromTheWorst2},
     {deba: deba1, extender: deba1Extender, p: closestFromRandoms},
     {deba: deba1, extender: deba1Extender, p: worstFromTheClosest},
@@ -50,13 +149,13 @@ const configs = [
     {deba: deba4, extender: deba4Extender, p: closestFromTheWorst1},
     {deba: deba4, extender: deba4Extender, p: closestFromTheWorst2},
     {deba: deba4, extender: deba4Extender, p: closestFromRandoms},
-    {deba: deba4, extender: deba4Extender, p: worstFromTheClosest},
+    {deba: deba4, extender: deba4Extender, p: worstFromTheClosest},*/
 ];
 
 (async function main() {
-    for (var dimension = 1; dimension <= 3; dimension++) {
+    for (var dimension = 2; dimension <= 2; dimension++) {
         const stat = {};
-        for(var configI = 0; configI < configs.length; configI++){
+        for (var configI = 0; configI < configs.length; configI++) {
             var config = configs[configI];
 
             const statistic = [];
@@ -78,7 +177,7 @@ const configs = [
                     if (dimension === 1) {
                         drawChart(config.deba, 0, 1, res, file + ".png");
                     } else if (dimension === 2) {
-                        await draw3dChart(numberHealth.bind(null, config.deba), 0, 1, res, file + ".png");
+                        await draw3dChart2(config.deba, res, file + ".png", config.x1Min, config.x2Min, config.x1Max, config.x2Max);
                     }
                 }
 

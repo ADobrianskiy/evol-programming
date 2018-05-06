@@ -1,12 +1,11 @@
 import {getByteArray, getGG, getNumberFromBytes, randomInteger} from "./helpers";
-import {health} from "./functions";
 import {concat} from "lodash";
 
 export function getParents(data, constants) {
     const population = data.population.map((a) => {
         return {
             person: a,
-            health: health(constants.deba, a)
+            health: constants.health(constants.deba, a)
         }
     });
     const totalHealth = population.reduce((a, b) => {
@@ -95,8 +94,8 @@ export function applyMutation(arr, p) {
     return arr;
 }
 
-export function getAvgHealth(population, deba) {
+export function getAvgHealth(population, deba, constants) {
     return population
-        .map(e => health(deba, e))
+        .map(e => constants.health(deba, e))
         .reduce((a, b) => a + b) / population.length;
 }

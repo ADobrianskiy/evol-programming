@@ -28,8 +28,6 @@ export function execute(data, props) {
 
     while (true) {
         step(data, constants, execution);
-
-        execution++;
         //console.log(`AVG health for step ${execution}:` ,statistic[statistic.length - 1].avgHealth);
 
         updateStatistic(statistic, data, constants);
@@ -49,6 +47,8 @@ export function execute(data, props) {
             res.reason = "statistic";
             return res;
         }
+        execution++;
+
     }
 }
 
@@ -61,7 +61,7 @@ export function updateStatistic(statistic, data, constants) {
 
 export function getStatistic(data, constants) {
     return {
-        avgHealth: getAvgHealth(data.population, constants.deba)
+        avgHealth: getAvgHealth(data.population, constants.deba, constants)
     }
 }
 
@@ -77,12 +77,12 @@ export function expandStatistic(statistic, data, constants, executions) {
 }
 
 export function stopBecauseOfStatistic(statistic, constants) {
-    if (statistic.length === constants.maxStatisticStorage) {
+    if (statistic.length === constants.maxStatisticStorage && Math.abs(statistic[0].avgHealth - statistic[statistic.length - 1].avgHealth) <= constants.minHealthDiff) {
         var stop = true;
-        var diff = []
+        var diff = [];
         for(var i = 1; i < statistic.length; i++){
             diff.push(Math.abs(statistic[i].avgHealth - statistic[i - 1].avgHealth));
-            if(Math.abs(statistic[i].avgHealth - statistic[i - 1].avgHealth) > constants.minHealthDiff){
+            if(Math.abs(statistic[i].avgHealth - statistic[i - 1].avgHealth) > 0.01){
                 stop = false;
             }
         }

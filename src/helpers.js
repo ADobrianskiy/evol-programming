@@ -193,8 +193,12 @@ export function getNumberFromBytes(arr) {
 }
 
 export function gemmingDistance(person1, preson2) {
-    const arr1 = getByteArray(person1);
-    const arr2 = getByteArray(preson2);
+    const arr1 = person1.reduce((a,b) => {
+        return a.concat(b);
+    }, []);
+    const arr2 = preson2.reduce((a,b) => {
+        return a.concat(b);
+    }, []);
 
     let distance = 0;
 
@@ -203,6 +207,7 @@ export function gemmingDistance(person1, preson2) {
             distance++;
         }
     }
+
     return distance;
 }
 

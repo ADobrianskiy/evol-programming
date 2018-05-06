@@ -67,8 +67,8 @@ function basicExtender(statistic, data, constants, globalPicks, localPicks) {
 
         const xDistOk = distanceBetweenPoints(seed, res.x) < maxXDiff;
 
-        const h1 = health(constants.deba, getByteArray(seed.map(e => e * 1000)));
-        const h2 = health(constants.deba, getByteArray(res.x.map(e => e * 1000)));
+        const h1 = constants.health(constants.deba, getByteArray(seed.map(e => e * 1000)));
+        const h2 = constants.health(constants.deba, getByteArray(res.x.map(e => e * 1000)));
         const yDistOk = Math.abs(h1 - h2) < maxYDiff;
         if (res.gp === seed.length && xDistOk &&yDistOk) {
             gp++;
@@ -124,7 +124,7 @@ export function numberHealth(deba, values){
         / values.length;
 }
 
-export function health(deba, bytes) {
+export function debaHealth(deba, bytes) {
     const id = deba.name + bytes.join();
     if(cache[id]) {
         return cache[id];
@@ -136,4 +136,130 @@ export function health(deba, bytes) {
     cache[id] = res;
 
     return res;
+}
+
+export function f46Health(deba, bytes) {
+    const id = deba.name + bytes.join();
+    if(cache[id]) {
+        return cache[id];
+    }
+
+    const xs = getNumberFromBytes(bytes);
+    const res = deba(f46X1Norm(xs[0]), f46X2Norm(xs[1]));
+
+    cache[id] = res;
+
+    return res;
+}
+
+export function f46X1Norm(x1){
+    return round((x1 - 500) / 500 * 3, 3);
+}
+
+export function f46X2Norm(x2){
+    return round((x2  - 500) / 500 * 2, 3);
+}
+
+export function round(num, n){
+    return num * Math.pow(10,n) / Math.pow(10,n);
+}
+
+export function f46X1Denorm(x1){
+    return  Math.round(x1 / 3 * 500 + 500);
+}
+
+export function f46X2Denorm(x2){
+    return Math.round(x2 / 2 * 500 + 500);
+}
+
+
+export function f46(x1,x2) {
+    return  -((4 - 2.1 * x1 * x1 + Math.pow(x1,4) / 3) + x1 * x1 + x1 * x2 + 4 * ( x2 * x2 - 1) * x2 * x2);
+}
+
+export function f46Extender(statistic, data, constants) {
+    const globalPicks = [{x1: -0.0898, x2: 0.7126, y:1.031628453}, {x1: 0.0898, x2: -0.7126, y:1.0316328453}];
+    const localPicks = [{x1: -1.7036 , x2: 0.7961, y:0.2155},{x1: 1.7036 , x2: -0.7961, y:0.2155}
+        ,{x1: -1.6071 , x2: -0.5687, y:-2.1043}, {x1: 1.6071 , x2: 0.5687, y:-2.1043}];
+    basicBinaryExtender(statistic, data, constants, globalPicks, localPicks, f46X1Denorm, f46X2Denorm);
+}
+
+// Converts from degrees to radians.
+Math.radians = function(degrees) {
+    return degrees * Math.PI / 180;
+};
+
+// Converts from radians to degrees.
+Math.degrees = function(radians) {
+    return radians * 180 / Math.PI;
+};
+
+export function f43(x1,x2) {
+    return  3 * Math.sin(0.5 * x1 * Math.PI + 0.5 * Math.PI) * (2 - Math.sqrt(x1 * x1 + x2 * x2)) / 4;
+}
+
+export function f43Extender(statistic, data, constants) {
+    const globalPicks = [{x1: 0, x2: 0, y:1.5}];
+    const localPicks = [{x1: 2 , x2: 2, y:0.62132034},{x1: 2 , x2: -2, y:0.62132034},
+        {x1: -2 , x2: 2, y:0.62132034},{x1: -2 , x2: -2, y:0.62132034}];
+    basicBinaryExtender(statistic, data, constants, globalPicks, localPicks, f46X1Denorm, f46X1Denorm);
+}
+
+
+function basicBinaryExtender(statistic, data, constants, globalPicks, localPicks,x1Denorm, x2Denorm) {
+    const maxYDiff = 0.01,
+        maxXDiff=0.01;
+
+    let gp = 0;
+    let lp = 0;
+
+
+    statistic.gps = [];
+    statistic.lps = [];
+    statistic.fps = [];
+
+    statistic.seeds.forEach(seed => {
+
+        const test = (a) => {
+            const yDiff = constants.health(constants.deba, getByteArray([x1Denorm(seed[0]), x2Denorm(seed[1])])) -
+                constants.health(constants.deba, getByteArray([x1Denorm(a.x1), x2Denorm(a.x2)]));
+            return Math.sqrt(Math.pow(Math.abs(a.x1 - seed[0]), 2) + Math.pow(Math.abs(a.x2 - seed[1]), 2)) < maxXDiff
+                && Math.abs(yDiff) < maxYDiff;
+        };
+        const isGlobal = globalPicks.find((a) => {
+            return test(a);
+        });
+        const isLocal = localPicks.find((a) => {
+            return test(a);
+        });
+
+        if(isGlobal) {
+            gp++;
+            statistic.gps.push(seed);
+        } else if(isLocal){
+            lp++;
+            statistic.lps.push(seed);
+        } else {
+            statistic.fps.push(seed);
+        }
+    });
+
+    statistic.nseeds = statistic.seeds.length;
+    statistic.np = gp + lp;
+    statistic.gp = gp;
+    statistic.pr = statistic.np / statistic.nseeds;
+    statistic.gpr = statistic.gp / globalPicks.length;
+
+    if (localPicks.length) {
+        statistic.lp = lp;
+        statistic.lpr = statistic.lp / localPicks.length;
+    }
+
+    statistic.fpr = (statistic.nseeds - statistic.np) / statistic.nseeds;
+
+    Object.keys(statistic).forEach(key => {
+        if(statistic[key] === "undefined" || (isNaN(statistic[key]) && typeof statistic[key] === "number")){
+            delete statistic[key];
+        }
+    })
 }
