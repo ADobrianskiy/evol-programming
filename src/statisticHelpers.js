@@ -17,7 +17,11 @@ export function getSeeds(data, constants) {
         });
 
         const a = getNumberFromBytes(seed);
-        seeds.push([constants.x1Norm(a[0]), constants.x2Norm(a[1])]);
+        if (constants.x1Norm && constants.x2Norm) {
+            seeds.push([constants.x1Norm(a[0]), constants.x2Norm(a[1])]);
+        } else {
+            seeds.push(a.map(a => constants.xNorm(a)));
+        }
     }
     return seeds;
 }
@@ -25,8 +29,16 @@ export function getSeeds(data, constants) {
 export function distance(byte1, byte2, constants) {
     const pp1 = getNumberFromBytes(byte1),
         pp2 = getNumberFromBytes(byte2);
-    const p1 = [constants.x1Norm(pp1[0]), constants.x2Norm(pp1[1])],
+    let p1, p2;
+    if (constants.x1Norm && constants.x2Norm) {
+        p1 = [constants.x1Norm(pp1[0]), constants.x2Norm(pp1[1])];
         p2 = [constants.x1Norm(pp2[0]), constants.x2Norm(pp2[1])];
+    } else {
+        p1 = pp1.map(a => constants.xNorm(a));
+        p2 = pp2.map(a => constants.xNorm(a));
+    }
+
+
     const d = p1.map((e, i) => {
         return Math.pow(e - p2[i], 2)
     });

@@ -10,8 +10,8 @@ const constantsBase = {
     pc: 1,
     pm: 0.2,
     maxExecutions: 20000000,
-    minHealthDiff: 0.001,
-    maxStatisticStorage: 10
+    minHealthDiff: 0.0001,
+    maxStatisticStorage: 20
 };
 
 /**

@@ -1,4 +1,4 @@
-import {draw3dChart, draw3dChart2, drawChart} from "./src/charts";
+import {draw3dChart, draw3dChart2, draw3dChart3, drawChart} from "./src/charts";
 
 require("source-map-support").install();
 import {execute} from "./src/executor";
@@ -7,7 +7,9 @@ import {
     writeExcel
 } from "./src/helpers";
 import {
-    deba1, deba1Extender, deba2, deba2Extender, deba3, deba3Extender, deba4, deba4Extender, debaHealth, f43,
+    deba1, deba1Extender, deba2, deba2Extender, deba3, deba3Extender, deba4, deba4Extender, debaHealth, f31, f31Denorm,
+    f31Extender,
+    f31Health, f31XNorm, f43,
     f43Extender, f46,
     f46Extender, f46Health, f46X1Denorm, f46X1Norm, f46X2Denorm, f46X2Norm,
     numberHealth
@@ -31,23 +33,106 @@ function getData(dimensions, testNumber) {
     }
 }
 
-const progons = 3;
+
+
+const progons = 10;
 
 const configs = [
     {
-        deba: f43,
-        extender: f43Extender,
+        deba: f31,
+        extender: f31Extender,
+        p: closestFromTheWorst1,
+        health: f31Health,
+        xMin: -10,
+        xMax: 10,
+        xNorm: f31XNorm,
+        xDenorm: f31Denorm,
+    },{
+        deba: f31,
+        extender: f31Extender,
+        p: closestFromTheWorst2,
+        health: f31Health,
+        xMin: -10,
+        xMax: 10,
+        xNorm: f31XNorm,
+        xDenorm: f31Denorm,
+    },
+    {
+        deba: f31,
+        extender: f31Extender,
+        p: closestFromRandoms,
+        health: f31Health,
+        xMin: -10,
+        xMax: 10,
+        xNorm: f31XNorm,
+        xDenorm: f31Denorm,
+    },
+    {
+        deba: f31,
+        extender: f31Extender,
+        p: worstFromTheClosest,
+        health: f31Health,
+        xMin: -10,
+        xMax: 10,
+        xNorm: f31XNorm,
+        xDenorm: f31Denorm,
+    },
+    {
+        deba: f46,
+        extender: f46Extender,
         p: closestFromTheWorst1,
         health: f46Health,
         x1Min: -3,
-        x2Min: -3,
+        x2Min: -2,
         x1Max: 3,
-        x2Max: 3,
+        x2Max: 2,
         x1Norm: f46X1Norm,
-        x2Norm: f46X1Norm,
+        x2Norm: f46X2Norm,
         x1Denorm: f46X1Denorm,
-        x2Denorm: f46X1Denorm
-    },{
+        x2Denorm: f46X2Denorm
+    },
+    {
+        deba: f46,
+        extender: f46Extender,
+        p: closestFromTheWorst2,
+        health: f46Health,
+        x1Min: -3,
+        x2Min: -2,
+        x1Max: 3,
+        x2Max: 2,
+        x1Norm: f46X1Norm,
+        x2Norm: f46X2Norm,
+        x1Denorm: f46X1Denorm,
+        x2Denorm: f46X2Denorm
+    },
+    {
+        deba: f46,
+        extender: f46Extender,
+        p: closestFromRandoms,
+        health: f46Health,
+        x1Min: -3,
+        x2Min: -2,
+        x1Max: 3,
+        x2Max: 2,
+        x1Norm: f46X1Norm,
+        x2Norm: f46X2Norm,
+        x1Denorm: f46X1Denorm,
+        x2Denorm: f46X2Denorm
+    },
+    {
+        deba: f46,
+        extender: f46Extender,
+        p: worstFromTheClosest,
+        health: f46Health,
+        x1Min: -3,
+        x2Min: -2,
+        x1Max: 3,
+        x2Max: 2,
+        x1Norm: f46X1Norm,
+        x2Norm: f46X2Norm,
+        x1Denorm: f46X1Denorm,
+        x2Denorm: f46X2Denorm
+    }/*,{
         deba: f43,
         extender: f43Extender,
         p: closestFromTheWorst2,
@@ -130,7 +215,7 @@ const configs = [
         x2Norm: f46X2Norm,
         x1Denorm: f46X1Denorm,
         x2Denorm: f46X2Denorm
-    }
+    }*/
     /*{deba: deba1, extender: deba1Extender, p: closestFromTheWorst1},
     {deba: deba1, extender: deba1Extender, p: closestFromTheWorst2},
     {deba: deba1, extender: deba1Extender, p: closestFromRandoms},
@@ -153,7 +238,7 @@ const configs = [
 ];
 
 (async function main() {
-    for (var dimension = 2; dimension <= 2; dimension++) {
+    for (var dimension = 1; dimension <= 2; dimension++) {
         const stat = {};
         for (var configI = 0; configI < configs.length; configI++) {
             var config = configs[configI];
@@ -175,9 +260,21 @@ const configs = [
 
                 if (!existsSync(file + ".png")) {
                     if (dimension === 1) {
-                        drawChart(config.deba, 0, 1, res, file + ".png");
+                        let xMin = 0;
+                        let xMax = 1;
+                        if(typeof config.xMin !== "undefined"){
+                            xMin = config.xMin
+                        }
+                        if(typeof config.xMax !== "undefined"){
+                            xMax = config.xMax
+                        }
+                        await drawChart(config.deba, xMin, xMax, res, file + ".png");
                     } else if (dimension === 2) {
-                        await draw3dChart2(config.deba, res, file + ".png", config.x1Min, config.x2Min, config.x1Max, config.x2Max);
+                        if(config.x1Min && config.x2Min && config.x1Max && config.x2Max){
+                            await draw3dChart2(config.deba, res, file + ".png", config.x1Min, config.x2Min, config.x1Max, config.x2Max);
+                        } else {
+                            await draw3dChart3(config.deba, res, file + ".png", config.xMin, config.xMax);
+                        }
                     }
                 }
 
@@ -197,6 +294,9 @@ const configs = [
 
     }
 })();
+
+console.log(f31([0.5, 0.5]));
+
 /*
 //const data = execute(getData(dimension,0), configs[0]);
 //writeFileSync(`out/out_.json`, JSON.stringify(data));
