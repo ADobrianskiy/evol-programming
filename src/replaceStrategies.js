@@ -68,9 +68,11 @@ export function closestFromRandoms(data, child, constants) {
     const res = candidates
         .sort((a, b) => gemmingDistance(a, child) - gemmingDistance(b, child));
 
-    //console.log(gemmingDistance(res[0], child),gemmingDistance(res[res.length-1], child) )
-    //console.timeEnd("closestFromRandoms");
-    return res[0];
+    let k =  res[0];
+    if(constants.health(constants.deba, k) > constants.health(constants.deba, child)){
+        k = child;
+    }
+    return k;
 }
 
 export function worstFromTheClosest(data, child, constants) {

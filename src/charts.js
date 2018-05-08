@@ -201,13 +201,11 @@ export function compute3dChartData(funct, min, max, statistic){
 
 
 
-export function draw3dChart2(funct, statistic, name, minX1, minX2, maxX1, maxX2){
+export function draw3dChart2(funct, statistic, name, minX1, minX2, maxX1, maxX2, step, additionalPicks){
     return new Promise((resolve) => {
-        const figure = compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2);
+        const figure = compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2, step, additionalPicks);
         const imgOpts = {
-            format: 'png',
-            width: 1000,
-            height: 500
+            format: 'png'
         };
 
         plotly.getImage(figure, imgOpts, function (error, imageStream) {
@@ -220,8 +218,8 @@ export function draw3dChart2(funct, statistic, name, minX1, minX2, maxX1, maxX2)
     });
 }
 
-export function compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2){
-    const step = 0.01;
+export function compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2, step2, additionalPicks){
+    const step = step2 || 0.01;
     const trace = {
         x: [],
         y: [],
@@ -241,6 +239,16 @@ export function compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2
             trace.y[trace.y.length-1].push(x2);
             trace.z[trace.z.length-1].push(funct(x1,x2));
         }
+    }
+    if(additionalPicks) {
+        additionalPicks.forEach((r) => {
+            trace.x.push([]);
+            trace.y.push([]);
+            trace.z.push([]);
+            trace.x[trace.x.length - 1].push(r.x1);
+            trace.y[trace.y.length - 1].push(r.x2);
+            trace.z[trace.z.length - 1].push(r.y);
+        });
     }
 
     var globalPicks = {

@@ -26,6 +26,8 @@ export function execute(data, props) {
 
     updateStatistic(statistic, data, constants);
 
+    const start = new Date().getTime();
+
     while (true) {
         step(data, constants, execution);
         //console.log(`AVG health for step ${execution}:` ,statistic[statistic.length - 1].avgHealth);
@@ -45,6 +47,11 @@ export function execute(data, props) {
             console.log("stop because of statistic");
             const res = expandStatistic(statistic.pop(), data, constants, execution);
             res.reason = "statistic";
+            return res;
+        } else if(new Date().getTime() - start > 3600000){
+            console.log("stop because of time");
+            const res = expandStatistic(statistic.pop(), data, constants, execution);
+            res.reason = "time";
             return res;
         }
         execution++;
@@ -82,7 +89,7 @@ export function stopBecauseOfStatistic(statistic, constants) {
         var diff = [];
         for(var i = 1; i < statistic.length; i++){
             diff.push(Math.abs(statistic[i].avgHealth - statistic[i - 1].avgHealth));
-            if(Math.abs(statistic[i].avgHealth - statistic[i - 1].avgHealth) > 0.01){
+            if(Math.abs(statistic[i].avgHealth - statistic[i - 1].avgHealth) > 0.001){
                 stop = false;
             }
         }
