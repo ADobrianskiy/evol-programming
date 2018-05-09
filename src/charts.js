@@ -201,25 +201,29 @@ export function compute3dChartData(funct, min, max, statistic){
 
 
 
-export function draw3dChart2(funct, statistic, name, minX1, minX2, maxX1, maxX2, step, additionalPicks){
+export function draw3dChart2(funct, statistic, name, minX1, minX2, maxX1, maxX2, step, additionalPicks,zCeof,  flag){
     return new Promise((resolve) => {
-        const figure = compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2, step, additionalPicks);
+        const figure = compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2, step, additionalPicks, zCeof);
         const imgOpts = {
             format: 'png'
         };
 
-        plotly.getImage(figure, imgOpts, function (error, imageStream) {
-            if (error) return console.log (error);
+        plotly.getImage(figure, imgOpts, async function (error, imageStream) {
+            if (error && flag && flag <=3) {
+                await draw3dChart2(funct, statistic, name, minX1, minX2, maxX1, maxX2, step, additionalPicks, zCeof, flag? flag + 1: 1)
+            } else {
+                var fileStream = fs.createWriteStream(name);
+                imageStream.pipe(fileStream);
+            }
 
-            var fileStream = fs.createWriteStream(name);
-            imageStream.pipe(fileStream);
             resolve();
         });
     });
 }
 
-export function compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2, step2, additionalPicks){
+export function compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2, step2, additionalPicks, zCoef){
     const step = step2 || 0.01;
+    zCoef = zCoef || 1;
     const trace = {
         x: [],
         y: [],
@@ -237,7 +241,7 @@ export function compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2
         for(let x2 = minX2; x2 <= maxX2; x2 = x2+step){
             trace.x[trace.x.length-1].push(x1);
             trace.y[trace.y.length-1].push(x2);
-            trace.z[trace.z.length-1].push(funct(x1,x2));
+            trace.z[trace.z.length-1].push(funct(x1,x2) * zCoef);
         }
     }
     if(additionalPicks) {
@@ -247,7 +251,7 @@ export function compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2
             trace.z.push([]);
             trace.x[trace.x.length - 1].push(r.x1);
             trace.y[trace.y.length - 1].push(r.x2);
-            trace.z[trace.z.length - 1].push(r.y);
+            trace.z[trace.z.length - 1].push(r.y * zCoef);
         });
     }
 
@@ -263,7 +267,7 @@ export function compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2
     statistic.gps.forEach((seed)=>{
         globalPicks.x.push(seed[0]);
         globalPicks.y.push(seed[1]);
-        globalPicks.z.push(funct(seed[0],seed[1]))
+        globalPicks.z.push(funct(seed[0],seed[1]) * zCoef)
     });
 
     var localPicks = {
@@ -277,7 +281,7 @@ export function compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2
     statistic.lps.forEach((seed)=>{
         localPicks.x.push(seed[0]);
         localPicks.y.push(seed[1]);
-        localPicks.z.push(funct(seed[0],seed[1]));
+        localPicks.z.push(funct(seed[0],seed[1]) * zCoef);
     });
 
     var incorrectPicks = {
@@ -299,7 +303,7 @@ export function compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2
     statistic.fps.forEach((seed)=>{
         incorrectPicks.x.push(seed[0]);
         incorrectPicks.y.push(seed[1]);
-        incorrectPicks.z.push(funct(seed[0],seed[1]));
+        incorrectPicks.z.push(funct(seed[0],seed[1]) * zCoef);
     });
 
     const figure = { 'data': [trace, globalPicks, localPicks, incorrectPicks] };
@@ -308,8 +312,9 @@ export function compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2
 
 
 
-export function compute3dChartData3(funct, statistic, min, max){
+export function compute3dChartData3(funct, statistic, min, max, zCoef){
     const step = 0.1;
+    zCoef = zCoef || 1;
     const trace = {
         x: [],
         y: [],
@@ -327,7 +332,7 @@ export function compute3dChartData3(funct, statistic, min, max){
         for(let x = min; x < max; x = x+step){
             trace.x[trace.x.length-1].push(x);
             trace.y[trace.y.length-1].push(y);
-            trace.z[trace.z.length-1].push(funct([x,y]));
+            trace.z[trace.z.length-1].push(funct([x,y]) * zCoef);
         }
     }
 
@@ -343,7 +348,7 @@ export function compute3dChartData3(funct, statistic, min, max){
     statistic.gps.forEach((seed)=>{
         globalPicks.x.push(seed[0]);
         globalPicks.y.push(seed[1]);
-        globalPicks.z.push(funct(seed[0],seed[1]))
+        globalPicks.z.push(funct(seed[0],seed[1]) * zCoef)
     });
 
     var localPicks = {
@@ -357,7 +362,7 @@ export function compute3dChartData3(funct, statistic, min, max){
     statistic.lps.forEach((seed)=>{
         localPicks.x.push(seed[0]);
         localPicks.y.push(seed[1]);
-        localPicks.z.push(funct(seed[0],seed[1]));
+        localPicks.z.push(funct(seed[0],seed[1]) * zCoef);
     });
 
     var incorrectPicks = {
@@ -379,16 +384,16 @@ export function compute3dChartData3(funct, statistic, min, max){
     statistic.fps.forEach((seed)=>{
         incorrectPicks.x.push(seed[0]);
         incorrectPicks.y.push(seed[1]);
-        incorrectPicks.z.push(funct(seed[0],seed[1]));
+        incorrectPicks.z.push(funct(seed[0],seed[1]) * zCoef);
     });
 
     const figure = { 'data': [trace, globalPicks, localPicks, incorrectPicks] };
     return figure;
 }
 
-export function draw3dChart3(funct, statistic, name, minX1, minX2, maxX1, maxX2){
+export function draw3dChart3(funct, statistic, name, minX1, minX2, maxX1, maxX2, zCoef){
     return new Promise((resolve) => {
-        const figure = compute3dChartData3(funct, statistic, minX1, minX2, maxX1, maxX2);
+        const figure = compute3dChartData3(funct, statistic, minX1, minX2, maxX1, maxX2, zCoef);
         const imgOpts = {
             format: 'png',
             width: 1000,
