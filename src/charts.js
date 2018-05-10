@@ -406,7 +406,10 @@ export function draw3dChart3(funct, statistic, name, minX1, minX2, maxX1, maxX2,
             var fileStream = fs.createWriteStream(name);
             imageStream.pipe(fileStream);
 
-            setTimeout(resolve, 10e3);
+            setTimeout(()=>{
+                console.log("resolve");
+                resolve();
+            }, 20e3);
         });
     });
 }
