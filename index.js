@@ -58,7 +58,8 @@ const configs = [
         xNorm: xNormConst(-600, 600),
         xDenorm: xDenormConst(-600, 600),
         dimensions: [1, 2, 3, 4],
-        step:2
+        step: 2,
+        zCoef: 1
     },
 
     {
@@ -287,9 +288,9 @@ const configs = [
                         await drawChart(config.deba, xMin, xMax, res, file + ".png", config.step);
                     } else if (dimension === 2) {
                         if (config.x1Min && config.x2Min && config.x1Max && config.x2Max) {
-                            await draw3dChart2(config.deba, res, file + ".png", config.x1Min, config.x2Min, config.x1Max, config.x2Max, config.step, config.additionalPicks);
+                            await draw3dChart2(config.deba, res, file + ".png", config.x1Min, config.x2Min, config.x1Max, config.x2Max, config.step, config.additionalPicks, config.zCoef);
                         } else {
-                            await draw3dChart3(config.deba, res, file + ".png", config.xMin, config.xMax);
+                            await draw3dChart3(config.deba, res, file + ".png", config.xMin, config.xMax, config.step, config.zCoef);
                         }
                     }
                 }

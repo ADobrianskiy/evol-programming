@@ -312,8 +312,8 @@ export function compute3dChartData2(funct, statistic, minX1, minX2, maxX1, maxX2
 
 
 
-export function compute3dChartData3(funct, statistic, min, max, zCoef){
-    const step = 0.1;
+export function compute3dChartData3(funct, statistic, min, max, step, zCoef){
+    step = step || 0.1;
     zCoef = zCoef || 1;
     const trace = {
         x: [],
@@ -391,9 +391,9 @@ export function compute3dChartData3(funct, statistic, min, max, zCoef){
     return figure;
 }
 
-export function draw3dChart3(funct, statistic, name, minX1, minX2, maxX1, maxX2, zCoef){
+export function draw3dChart3(funct, statistic, name, minX1, minX2, maxX1, maxX2, step, zCoef){
     return new Promise((resolve) => {
-        const figure = compute3dChartData3(funct, statistic, minX1, minX2, maxX1, maxX2, zCoef);
+        const figure = compute3dChartData3(funct, statistic, minX1, minX2, maxX1, maxX2,step, zCoef);
         const imgOpts = {
             format: 'png',
             width: 1000,
