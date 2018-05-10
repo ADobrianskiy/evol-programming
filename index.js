@@ -9,13 +9,14 @@ import {
 import {
     d6, d6Denorm, d6Extender,
     d6XNorm,
-    deba1, deba1Extender, deba2, deba2Extender, deba3, deba3Extender, deba4, deba4Extender, debaHealth, f24,
-    f24Extender, f24Health, f28, f28Extender, f31,
+    deba1, deba1Extender, deba2, deba2Extender, deba3, deba3Extender, deba4, deba4Extender, debaHealth, f22,
+    f22Extender, f23, f23Extender, f24,
+    f24Extender, f24Health, f25, f25Extender, f28, f28Extender, f31,
     f31Denorm,
     f31Extender,
     f31Health, f31XNorm, f42, f42Extender, f42Health, f43,
     f43Extender, f45, f45Extender, f45Health, f46,
-    f46Extender, f46Health, f46X1Denorm, f46X1Norm, f46X2Denorm, f46X2Norm, generalHealth,
+    f46Extender, f46Health, f46X1Denorm, f46X1Norm, f46X2Denorm, f46X2Norm, f50g, f50gExtender, generalHealth,
     numberHealth, rastrigin, rastriginDenorm, rastriginExtender, rastriginMod, rastriginModExtender, rastriginXNorm,
     sheckels,
     sheckelsExtender,
@@ -48,373 +49,215 @@ const max = 1e3;
 
 const configs = [
     {
-        deba: d6,
-        extender: d6Extender,
+        deba: f22,
+        extender: f22Extender,
         p: closestFromTheWorst1,
-        health: generalHealth.bind(null, d6XNorm.bind(null, max)),
-        xMin: 0,
-        xMax: 30,
-        xNorm: d6XNorm.bind(null, max),
-        xDenorm: d6Denorm.bind(null, max),
-        dimensions: [1]
-    },
-    {
-        deba: d6,
-        extender: d6Extender,
-        p: closestFromRandoms,
-        health: generalHealth.bind(null, d6XNorm.bind(null, max)),
-        xMin: 0,
-        xMax: 30,
-        xNorm: d6XNorm.bind(null, max),
-        xDenorm: d6Denorm.bind(null, max),
-        dimensions: [1]
+        health: generalHealth.bind(null, xNormConst(-600, 600)),
+        xMin: -600,
+        xMax: 600,
+        xNorm: xNormConst(-600, 600),
+        xDenorm: xDenormConst(-600, 600),
+        dimensions: [1, 2, 3, 4],
+        step:2
     },
 
     {
-        deba: sheckels,
-        extender: sheckelsExtender,
+        deba: f22,
+        extender: f22Extender,
+        p: closestFromTheWorst2,
+        health: generalHealth.bind(null, xNormConst(-600, 600)),
+        xMin: -600,
+        xMax: 600,
+        xNorm: xNormConst(-600, 600),
+        xDenorm: xDenormConst(-600, 600),
+        dimensions: [1, 2, 3, 4],
+        step: 2
+    },
+
+    {
+        deba: f22,
+        extender: f22Extender,
+        p: closestFromRandoms,
+        health: generalHealth.bind(null, xNormConst(-600, 600)),
+        xMin: -600,
+        xMax: 600,
+        xNorm: xNormConst(-600, 600),
+        xDenorm: xDenormConst(-600, 600),
+        dimensions: [1, 2, 3, 4],
+        step: 2
+    },
+
+    {
+        deba: f22,
+        extender: f22Extender,
+        p: worstFromTheClosest,
+        health: generalHealth.bind(null, xNormConst(-600, 600)),
+        xMin: -600,
+        xMax: 600,
+        xNorm: xNormConst(-600, 600),
+        xDenorm: xDenormConst(-600, 600),
+        dimensions: [1, 2, 3, 4],
+        step: 2
+    },
+
+    // -----------------------------
+
+    {
+        deba: f23,
+        extender: f23Extender,
         p: closestFromTheWorst1,
-        health: sheckelsHealth,
-        x1Min: -65.536,
-        x2Min: -65.536,
-        x1Max: 65.536,
-        x2Max: 65.536,
-        x1Norm: sheckelsXNorm,
-        x2Norm: sheckelsXNorm,
-        x1Denorm: sheckelsXDenorm,
-        x2Denorm: sheckelsXDenorm,
-        dimensions: [2],
-        step: 1,
-        additionalPicks: sheckelsPicks()
+        health: generalHealth.bind(null, xNormConst(-500, 500)),
+        xMin: -500,
+        xMax: 500,
+        xNorm: xNormConst(-500, 500),
+        xDenorm: xDenormConst(-500, 500),
+        dimensions: [1, 2, 3, 4],
+        step: 2
+    },
+    {
+        deba: f23,
+        extender: f23Extender,
+        p: closestFromTheWorst2,
+        health: generalHealth.bind(null, xNormConst(-500, 500)),
+        xMin: -500,
+        xMax: 500,
+        xNorm: xNormConst(-500, 500),
+        xDenorm: xDenormConst(-500, 500),
+        dimensions: [1, 2, 3, 4],
+        step: 2
+    },
+    {
+        deba: f23,
+        extender: f23Extender,
+        p: closestFromRandoms,
+        health: generalHealth.bind(null, xNormConst(-500, 500)),
+        xMin: -500,
+        xMax: 500,
+        xNorm: xNormConst(-500, 500),
+        xDenorm: xDenormConst(-500, 500),
+        dimensions: [1, 2, 3, 4],
+        step: 2
+    },
+    {
+        deba: f23,
+        extender: f23Extender,
+        p: worstFromTheClosest,
+        health: generalHealth.bind(null, xNormConst(-500, 500)),
+        xMin: -500,
+        xMax: 500,
+        xNorm: xNormConst(-500, 500),
+        xDenorm: xDenormConst(-500, 500),
+        dimensions: [1, 2, 3, 4],
+        step: 2
     },
 
-
+    // -----------------------------
     {
-        deba: rastrigin,
-        extender: rastriginExtender,
+
+        deba: f50g,
+        extender: f50gExtender,
         p: closestFromTheWorst1,
-        health: generalHealth.bind(null, rastriginXNorm),
-        xMin: -5.12,
-        xMax: 5.12,
-        xNorm: rastriginXNorm,
-        xDenorm: rastriginDenorm,
-        dimensions: [1,2,3]
+        health: generalHealth.bind(null, xNormConst(-2 * Math.PI, 2 * Math.PI)),
+        xMin: -2 * Math.PI,
+        xMax: 2 * Math.PI,
+        xNorm: xNormConst(-2 * Math.PI, 2 * Math.PI),
+        xDenorm: xDenormConst(-2 * Math.PI, 2 * Math.PI),
+        dimensions: [1, 2, 3, 4]
+    }, {
+
+        deba: f50g,
+        extender: f50gExtender,
+        p: closestFromTheWorst2,
+        health: generalHealth.bind(null, xNormConst(-2 * Math.PI, 2 * Math.PI)),
+        xMin: -2 * Math.PI,
+        xMax: 2 * Math.PI,
+        xNorm: xNormConst(-2 * Math.PI, 2 * Math.PI),
+        xDenorm: xDenormConst(-2 * Math.PI, 2 * Math.PI),
+        dimensions: [1, 2, 3, 4]
+    }, {
+
+        deba: f50g,
+        extender: f50gExtender,
+        p: closestFromRandoms,
+        health: generalHealth.bind(null, xNormConst(-2 * Math.PI, 2 * Math.PI)),
+        xMin: -2 * Math.PI,
+        xMax: 2 * Math.PI,
+        xNorm: xNormConst(-2 * Math.PI, 2 * Math.PI),
+        xDenorm: xDenormConst(-2 * Math.PI, 2 * Math.PI),
+        dimensions: [1, 2, 3, 4]
+    }, {
+
+        deba: f50g,
+        extender: f50gExtender,
+        p: worstFromTheClosest,
+        health: generalHealth.bind(null, xNormConst(-2 * Math.PI, 2 * Math.PI)),
+        xMin: -2 * Math.PI,
+        xMax: 2 * Math.PI,
+        xNorm: xNormConst(-2 * Math.PI, 2 * Math.PI),
+        xDenorm: xDenormConst(-2 * Math.PI, 2 * Math.PI),
+        dimensions: [1, 2, 3, 4]
     },
 
+    // -----------------------------
     {
-        deba: f42,
-        extender: f42Extender,
+        deba: f25,
+        extender: f25Extender,
         p: closestFromTheWorst1,
-        health: f42Health,
-        x1Min: -2.5,
-        x2Min: -2,
-        x1Max: 3,
-        x2Max: 2,
-        x1Norm: xNormConst(-2.5, 3),
-        x2Norm: xNormConst(-2, 2),
-        x1Denorm: xDenormConst(-2.5, 3),
-        x2Denorm: xDenormConst(-2, 2),
-        dimensions: [2],
-        step: 0.2
-    },
-
-
-    {
-        deba: f45,
-        extender: f45Extender,
-        p: closestFromTheWorst1,
-        health: f45Health,
-        x1Min: -6,
-        x2Min: -6,
-        x1Max: 6,
-        x2Max: 6,
-        x1Norm: xNormConst(-6, 6),
-        x2Norm: xNormConst(-6, 6),
-        x1Denorm: xDenormConst(-6, 6),
-        x2Denorm: xDenormConst(-6, 6),
-        dimensions: [2],
-        step: 0.2
-    },
-
-
-    {
-        deba: f24,
-        extender: f24Extender,
-        p: closestFromTheWorst1,
-        health: f24Health,
-        x1Min: -10,
-        x2Min: -10,
-        x1Max: 10,
-        x2Max: 10,
-        x1Norm: xNormConst(-10, 10),
-        x2Norm: xNormConst(-10, 10),
-        x1Denorm: xDenormConst(-10, 10),
-        x2Denorm: xDenormConst(-10, 10),
-        dimensions: [2],
-        step: 0.2
-    },
-    {
-        deba: f24,
-        extender: f24Extender,
-        p: closestFromRandoms,
-        health: f24Health,
-        x1Min: -10,
-        x2Min: -10,
-        x1Max: 10,
-        x2Max: 10,
-        x1Norm: xNormConst(-10, 10),
-        x2Norm: xNormConst(-10, 10),
-        x1Denorm: xDenormConst(-10, 10),
-        x2Denorm: xDenormConst(-10, 10),
-        dimensions: [2],
-        step: 0.2
-    },
-
-
-    {
-        deba: f28,
-        extender: f28Extender,
-        p: closestFromTheWorst1,
-        health: generalHealth.bind(null,  xNormConst(0.25,10)),
-        xMin: 0.25,
-        xMax: 10,
-        xNorm: xNormConst(0.25,10),
-        xDenorm: xDenormConst(0.25,10),
-        dimensions: [1,2,3]
-    },
-    {
-        deba: f28,
-        extender: f28Extender,
-        p: closestFromRandoms,
-        health: generalHealth.bind(null,  xNormConst(0.25,10)),
-        xMin: 0.25,
-        xMax: 10,
-        xNorm: xNormConst(0.25,10),
-        xDenorm: xDenormConst(0.25,10),
-        dimensions: [1,2,3]
-    },
-
-
-    {
-        deba: rastriginMod,
-        extender: rastriginModExtender,
-        p: closestFromTheWorst1,
-        health: generalHealth.bind(null,  xNormConst(0,1)),
-        xMin: 0,
-        xMax: 1,
-        xNorm: xNormConst(0,1),
-        xDenorm: xDenormConst(0,1),
-        dimensions: [2]
-    },
-    {
-        deba: rastriginMod,
-        extender: rastriginModExtender,
-        p: closestFromRandoms,
-        health: generalHealth.bind(null,  xNormConst(0,1)),
-        xMin: 0,
-        xMax: 1,
-        xNorm: xNormConst(0,1),
-        xDenorm: xDenormConst(0,1),
-        dimensions: [2]
-    },
-
-
-// ----------------------------------------------
-
-
-    {
-        deba: d6,
-        extender: d6Extender,
+        health: generalHealth.bind(null, xNormConst(-32.678, 32.678)),
+        xMin: -32.678,
+        xMax: 32.678,
+        xNorm: xNormConst(-32.678, 32.678),
+        xDenorm: xDenormConst(-32.678, 32.678),
+        dimensions: [1, 2, 3, 4],
+        step: 0.1
+    }, {
+        deba: f25,
+        extender: f25Extender,
         p: closestFromTheWorst2,
-        health: generalHealth.bind(null, d6XNorm.bind(null, max)),
-        xMin: 0,
-        xMax: 30,
-        xNorm: d6XNorm.bind(null, max),
-        xDenorm: d6Denorm.bind(null, max),
-        dimensions: [1]
-    },
-    {
-        deba: sheckels,
-        extender: sheckelsExtender,
-        p: closestFromTheWorst2,
-        health: sheckelsHealth,
-        x1Min: -65.536,
-        x2Min: -65.536,
-        x1Max: 65.536,
-        x2Max: 65.536,
-        x1Norm: sheckelsXNorm,
-        x2Norm: sheckelsXNorm,
-        x1Denorm: sheckelsXDenorm,
-        x2Denorm: sheckelsXDenorm,
-        dimensions: [2],
-        step: 1,
-        additionalPicks: sheckelsPicks()
-    },
-    {
-        deba: rastrigin,
-        extender: rastriginExtender,
-        p: closestFromTheWorst2,
-        health: generalHealth.bind(null, rastriginXNorm),
-        xMin: -5.12,
-        xMax: 5.12,
-        xNorm: rastriginXNorm,
-        xDenorm: rastriginDenorm,
-        dimensions: [1,2,3]
-    },
-
-    {
-        deba: f42,
-        extender: f42Extender,
-        p: closestFromTheWorst2,
-        health: f42Health,
-        x1Min: -2.5,
-        x2Min: -2,
-        x1Max: 3,
-        x2Max: 2,
-        x1Norm: xNormConst(-2.5, 3),
-        x2Norm: xNormConst(-2, 2),
-        x1Denorm: xDenormConst(-2.5, 3),
-        x2Denorm: xDenormConst(-2, 2),
-        dimensions: [2],
-        step: 0.2
-    },
-    {
-        deba: f45,
-        extender: f45Extender,
-        p: closestFromTheWorst2,
-        health: f45Health,
-        x1Min: -6,
-        x2Min: -6,
-        x1Max: 6,
-        x2Max: 6,
-        x1Norm: xNormConst(-6, 6),
-        x2Norm: xNormConst(-6, 6),
-        x1Denorm: xDenormConst(-6, 6),
-        x2Denorm: xDenormConst(-6, 6),
-        dimensions: [2],
-        step: 0.2
-    },
-    {
-        deba: f24,
-        extender: f24Extender,
-        p: closestFromTheWorst2,
-        health: f24Health,
-        x1Min: -10,
-        x2Min: -10,
-        x1Max: 10,
-        x2Max: 10,
-        x1Norm: xNormConst(-10, 10),
-        x2Norm: xNormConst(-10, 10),
-        x1Denorm: xDenormConst(-10, 10),
-        x2Denorm: xDenormConst(-10, 10),
-        dimensions: [2],
-        step: 0.2
-    },
-    {
-        deba: f28,
-        extender: f28Extender,
-        p: closestFromTheWorst2,
-        health: generalHealth.bind(null,  xNormConst(0.25,10)),
-        xMin: 0.25,
-        xMax: 10,
-        xNorm: xNormConst(0.25,10),
-        xDenorm: xDenormConst(0.25,10),
-        dimensions: [1,2,3]
-    },
-    {
-        deba: rastriginMod,
-        extender: rastriginModExtender,
-        p: closestFromTheWorst2,
-        health: generalHealth.bind(null,  xNormConst(0,1)),
-        xMin: 0,
-        xMax: 1,
-        xNorm: xNormConst(0,1),
-        xDenorm: xDenormConst(0,1),
-        dimensions: [2]
-    },{
-        deba: rastrigin,
-        extender: rastriginExtender,
+        health: generalHealth.bind(null, xNormConst(-32.678, 32.678)),
+        xMin: -32.678,
+        xMax: 32.678,
+        xNorm: xNormConst(-32.678, 32.678),
+        xDenorm: xDenormConst(-32.678, 32.678),
+        dimensions: [1, 2, 3, 4],
+        step: 1
+    }, {
+        deba: f25,
+        extender: f25Extender,
         p: closestFromRandoms,
-        health: generalHealth.bind(null, rastriginXNorm),
-        xMin: -5.12,
-        xMax: 5.12,
-        xNorm: rastriginXNorm,
-        xDenorm: rastriginDenorm,
-        dimensions: [1,2,3]
+        health: generalHealth.bind(null, xNormConst(-32.678, 32.678)),
+        xMin: -32.678,
+        xMax: 32.678,
+        xNorm: xNormConst(-32.678, 32.678),
+        xDenorm: xDenormConst(-32.678, 32.678),
+        dimensions: [1, 2, 3, 4],
+        step: 1
+    }, {
+        deba: f25,
+        extender: f25Extender,
+        p: worstFromTheClosest,
+        health: generalHealth.bind(null, xNormConst(-32.678, 32.678)),
+        xMin: -32.678,
+        xMax: 32.678,
+        xNorm: xNormConst(-32.678, 32.678),
+        xDenorm: xDenormConst(-32.678, 32.678),
+        dimensions: [1, 2, 3, 4],
+        step: 1
     },
-    {
-        deba: sheckels,
-        extender: sheckelsExtender,
-        p: closestFromRandoms,
-        health: sheckelsHealth,
-        x1Min: -65.536,
-        x2Min: -65.536,
-        x1Max: 65.536,
-        x2Max: 65.536,
-        x1Norm: sheckelsXNorm,
-        x2Norm: sheckelsXNorm,
-        x1Denorm: sheckelsXDenorm,
-        x2Denorm: sheckelsXDenorm,
-        dimensions: [2],
-        step: 1,
-        additionalPicks: sheckelsPicks()
-    },
-    {
-        deba: d6,
-        extender: d6Extender,
-        p: closestFromRandoms,
-        health: generalHealth.bind(null, d6XNorm.bind(null, max)),
-        xMin: 0,
-        xMax: 30,
-        xNorm: d6XNorm.bind(null, max),
-        xDenorm: d6Denorm.bind(null, max),
-        dimensions: [1]
-    },
-    {
-        deba: f42,
-        extender: f42Extender,
-        p: closestFromRandoms,
-        health: f42Health,
-        x1Min: -2.5,
-        x2Min: -2,
-        x1Max: 3,
-        x2Max: 2,
-        x1Norm: xNormConst(-2.5, 3),
-        x2Norm: xNormConst(-2, 2),
-        x1Denorm: xDenormConst(-2.5, 3),
-        x2Denorm: xDenormConst(-2, 2),
-        dimensions: [2],
-        step: 0.2
-    },{
-        deba: f45,
-        extender: f45Extender,
-        p: closestFromRandoms,
-        health: f45Health,
-        x1Min: -6,
-        x2Min: -6,
-        x1Max: 6,
-        x2Max: 6,
-        x1Norm: xNormConst(-6, 6),
-        x2Norm: xNormConst(-6, 6),
-        x1Denorm: xDenormConst(-6, 6),
-        x2Denorm: xDenormConst(-6, 6),
-        dimensions: [2],
-        step: 0.2
-    }
 ];
 (async function main() {
-    for (var dimension = 1; dimension <= 3; dimension++) {
+    for (var dimension = 1; dimension <= 4; dimension++) {
         const stat = {};
         for (var configI = 0; configI < configs.length; configI++) {
             var config = configs[configI];
-            if(config && (
-                (config.dimensions && config.dimensions.indexOf(dimension) === -1) || config.broken)){
+            if (config && (
+                    (config.dimensions && config.dimensions.indexOf(dimension) === -1) || config.broken)) {
                 continue;
             }
 
             const statistic = [];
             for (let i = 0; i < progons; i++) {
-                if(config.broken){
+                if (config.broken) {
                     continue;
                 }
 
@@ -441,7 +284,7 @@ const configs = [
                         if (typeof config.xMax !== "undefined") {
                             xMax = config.xMax
                         }
-                        await drawChart(config.deba, xMin, xMax, res, file + ".png");
+                        await drawChart(config.deba, xMin, xMax, res, file + ".png", config.step);
                     } else if (dimension === 2) {
                         if (config.x1Min && config.x2Min && config.x1Max && config.x2Max) {
                             await draw3dChart2(config.deba, res, file + ".png", config.x1Min, config.x2Min, config.x1Max, config.x2Max, config.step, config.additionalPicks);
@@ -452,8 +295,8 @@ const configs = [
                 }
 
                 statistic.push(res);
-                if(res.reason === "time"){
-                    config. broken = true;
+                if (res.reason === "time") {
+                    config.broken = true;
                 }
             }
             if (!stat[config.deba.name]) stat[config.deba.name] = [];

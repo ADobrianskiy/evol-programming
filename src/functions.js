@@ -529,6 +529,121 @@ export function f31Extender(statistic, data, constants) {
     basicExtender2(statistic, data, constants, globalPicks, localPicks, f31Denorm);
 }
 
+export function f25(xs) {
+    if (!Array.isArray(xs)) {
+        xs = [xs];
+    }
+
+    const n = xs.length;
+    const a = xs.reduce((acc, x)=>{
+        return acc + x * x;
+    }, 0);
+
+    const b = xs.reduce((acc, x)=>{
+        return acc + Math.cos(2 * Math.PI * x);
+    }, 0);
+
+    return 20 * Math.exp(- 0.2 * Math.sqrt(1 / n * a)) + Math.exp(1/n * b) - 20 - Math.exp(1);
+}
+
+export function f25Extender(statistic, data, constants) {
+
+    const dim = constants.dimension;
+    const x = Array(dim).fill(0);
+    let globalPicks = [
+        {x: x, y: f50g(x)}
+    ];
+
+    const localPicks = [];
+    basicExtender2(statistic, data, constants, globalPicks, localPicks, f31Denorm);
+}
+
+export function f50g(xs){
+    if (!Array.isArray(xs)) {
+        xs = [xs];
+    }
+    const n = xs.length;
+
+    const coef = Math.pow(-1, n);
+
+    const a = xs.reduce((acc, x)=>{
+        return acc * Math.cos(x);
+    },1);
+
+    const b = xs.reduce((acc, x)=>{
+        return acc + Math.pow(x - Math.PI, 2);
+    },0);
+
+    return coef * a * Math.exp(-b);
+
+}
+
+export function f50gExtender(statistic, data, constants) {
+
+    const dim = constants.dimension;
+    const x = Array(dim).fill(Math.PI);
+    let globalPicks = [
+        {x: x, y: f50g(x)}
+    ];
+
+    const localPicks = [];
+    basicExtender2(statistic, data, constants, globalPicks, localPicks, f31Denorm);
+}
+
+export function f23(xs){
+    if (!Array.isArray(xs)) {
+        xs = [xs];
+    }
+
+    const n = xs.length;
+
+    const a = xs.reduce((acc, x) => {
+
+        return acc + x * Math.sin(Math.sqrt(Math.abs(x)))
+    }, 0);
+    return 1/ n * a
+}
+export function f23Extender(statistic, data, constants) {
+
+    const dim = constants.dimension;
+    const x = Array(dim).fill(420.9687);
+    let globalPicks = [
+        {x: x, y: f23(x)}
+    ];
+
+    const localPicks = [];
+    basicExtender2(statistic, data, constants, globalPicks, localPicks, f31Denorm);
+}
+
+
+export function f22(xs){
+    if (!Array.isArray(xs)) {
+        xs = [xs];
+    }
+
+    const n = xs.length;
+
+    const a = xs.reduce((acc, x) => {
+       return x* x / 4000;
+    },0);
+
+    const b = xs.reduce((acc, x, index) => {
+        const i = index+1;
+        return acc * Math.cos(x / Math.sqrt(i))
+    }, 1);
+    return n - (a - b + 1)
+}
+
+export function f22Extender(statistic, data, constants) {
+
+    const dim = constants.dimension;
+    let globalPicks = [
+        {x: Array(dim).fill(0), y: dim}
+    ];
+
+    const localPicks = [];
+    basicExtender2(statistic, data, constants, globalPicks, localPicks, f31Denorm);
+}
 
 export function d6(xs) {
     if (!Array.isArray(xs)) {

@@ -89,7 +89,7 @@ export function stopBecauseOfStatistic(statistic, constants) {
         var diff = [];
         for(var i = 1; i < statistic.length; i++){
             diff.push(Math.abs(statistic[i].avgHealth - statistic[i - 1].avgHealth));
-            if(Math.abs(statistic[i].avgHealth - statistic[i - 1].avgHealth) > 0.001){
+            if(Math.abs(statistic[i].avgHealth - statistic[i - 1].avgHealth) > constants.minHealthDiff){
                 stop = false;
             }
         }
