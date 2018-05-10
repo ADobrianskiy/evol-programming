@@ -85,7 +85,8 @@ const configs = [
         x2Denorm: sheckelsXDenorm,
         dimensions: [2],
         step: 1,
-        additionalPicks: sheckelsPicks()
+        additionalPicks: sheckelsPicks(),
+        zCoef: 1/10
     },
 
 
@@ -98,7 +99,7 @@ const configs = [
         xMax: 5.12,
         xNorm: rastriginXNorm,
         xDenorm: rastriginDenorm,
-        dimensions: [1,2,3]
+        dimensions: [1,2,3,4]
     },
 
     {
@@ -180,7 +181,7 @@ const configs = [
         xMax: 10,
         xNorm: xNormConst(0.25,10),
         xDenorm: xDenormConst(0.25,10),
-        dimensions: [1,2,3]
+        dimensions: [1,2,3,4]
     },
     {
         deba: f28,
@@ -191,7 +192,7 @@ const configs = [
         xMax: 10,
         xNorm: xNormConst(0.25,10),
         xDenorm: xDenormConst(0.25,10),
-        dimensions: [1,2,3]
+        dimensions: [1,2,3,4]
     },
 
 
@@ -248,7 +249,8 @@ const configs = [
         x2Denorm: sheckelsXDenorm,
         dimensions: [2],
         step: 1,
-        additionalPicks: sheckelsPicks()
+        additionalPicks: sheckelsPicks(),
+        zCoef: 1/10
     },
     {
         deba: rastrigin,
@@ -259,7 +261,7 @@ const configs = [
         xMax: 5.12,
         xNorm: rastriginXNorm,
         xDenorm: rastriginDenorm,
-        dimensions: [1,2,3]
+        dimensions: [1,2,3,4]
     },
 
     {
@@ -319,7 +321,7 @@ const configs = [
         xMax: 10,
         xNorm: xNormConst(0.25,10),
         xDenorm: xDenormConst(0.25,10),
-        dimensions: [1,2,3]
+        dimensions: [1,2,3,4]
     },
     {
         deba: rastriginMod,
@@ -340,7 +342,7 @@ const configs = [
         xMax: 5.12,
         xNorm: rastriginXNorm,
         xDenorm: rastriginDenorm,
-        dimensions: [1,2,3]
+        dimensions: [1,2,3,4]
     },
     {
         deba: sheckels,
@@ -357,7 +359,8 @@ const configs = [
         x2Denorm: sheckelsXDenorm,
         dimensions: [2],
         step: 1,
-        additionalPicks: sheckelsPicks()
+        additionalPicks: sheckelsPicks(),
+        zCoef: 1/10
     },
     {
         deba: d6,
@@ -400,10 +403,193 @@ const configs = [
         x2Denorm: xDenormConst(-6, 6),
         dimensions: [2],
         step: 0.2
+    },
+
+    // --------------------------------------------------------------
+    {
+        deba: d6,
+        extender: d6Extender,
+        p: worstFromTheClosest,
+        health: generalHealth.bind(null, d6XNorm.bind(null, max)),
+        xMin: 0,
+        xMax: 30,
+        xNorm: d6XNorm.bind(null, max),
+        xDenorm: d6Denorm.bind(null, max),
+        dimensions: [1]
+    },
+    {
+        deba: sheckels,
+        extender: sheckelsExtender,
+        p: worstFromTheClosest,
+        health: sheckelsHealth,
+        x1Min: -65.536,
+        x2Min: -65.536,
+        x1Max: 65.536,
+        x2Max: 65.536,
+        x1Norm: sheckelsXNorm,
+        x2Norm: sheckelsXNorm,
+        x1Denorm: sheckelsXDenorm,
+        x2Denorm: sheckelsXDenorm,
+        dimensions: [2],
+        step: 1,
+        additionalPicks: sheckelsPicks(),
+        zCoef: 1/10
+    },
+    {
+        deba: rastrigin,
+        extender: rastriginExtender,
+        p: worstFromTheClosest,
+        health: generalHealth.bind(null, rastriginXNorm),
+        xMin: -5.12,
+        xMax: 5.12,
+        xNorm: rastriginXNorm,
+        xDenorm: rastriginDenorm,
+        dimensions: [1,2,3,4]
+    },
+
+    {
+        deba: f42,
+        extender: f42Extender,
+        p: worstFromTheClosest,
+        health: f42Health,
+        x1Min: -2.5,
+        x2Min: -2,
+        x1Max: 3,
+        x2Max: 2,
+        x1Norm: xNormConst(-2.5, 3),
+        x2Norm: xNormConst(-2, 2),
+        x1Denorm: xDenormConst(-2.5, 3),
+        x2Denorm: xDenormConst(-2, 2),
+        dimensions: [2],
+        step: 0.2
+    },
+    {
+        deba: f45,
+        extender: f45Extender,
+        p: worstFromTheClosest,
+        health: f45Health,
+        x1Min: -6,
+        x2Min: -6,
+        x1Max: 6,
+        x2Max: 6,
+        x1Norm: xNormConst(-6, 6),
+        x2Norm: xNormConst(-6, 6),
+        x1Denorm: xDenormConst(-6, 6),
+        x2Denorm: xDenormConst(-6, 6),
+        dimensions: [2],
+        step: 0.2
+    },
+    {
+        deba: f24,
+        extender: f24Extender,
+        p: worstFromTheClosest,
+        health: f24Health,
+        x1Min: -10,
+        x2Min: -10,
+        x1Max: 10,
+        x2Max: 10,
+        x1Norm: xNormConst(-10, 10),
+        x2Norm: xNormConst(-10, 10),
+        x1Denorm: xDenormConst(-10, 10),
+        x2Denorm: xDenormConst(-10, 10),
+        dimensions: [2],
+        step: 0.2
+    },
+    {
+        deba: f28,
+        extender: f28Extender,
+        p: worstFromTheClosest,
+        health: generalHealth.bind(null,  xNormConst(0.25,10)),
+        xMin: 0.25,
+        xMax: 10,
+        xNorm: xNormConst(0.25,10),
+        xDenorm: xDenormConst(0.25,10),
+        dimensions: [1,2,3,4]
+    },
+    {
+        deba: rastriginMod,
+        extender: rastriginModExtender,
+        p: worstFromTheClosest,
+        health: generalHealth.bind(null,  xNormConst(0,1)),
+        xMin: 0,
+        xMax: 1,
+        xNorm: xNormConst(0,1),
+        xDenorm: xDenormConst(0,1),
+        dimensions: [2]
+    },{
+        deba: rastrigin,
+        extender: rastriginExtender,
+        p: worstFromTheClosest,
+        health: generalHealth.bind(null, rastriginXNorm),
+        xMin: -5.12,
+        xMax: 5.12,
+        xNorm: rastriginXNorm,
+        xDenorm: rastriginDenorm,
+        dimensions: [1,2,3,4]
+    },
+    {
+        deba: sheckels,
+        extender: sheckelsExtender,
+        p: worstFromTheClosest,
+        health: sheckelsHealth,
+        x1Min: -65.536,
+        x2Min: -65.536,
+        x1Max: 65.536,
+        x2Max: 65.536,
+        x1Norm: sheckelsXNorm,
+        x2Norm: sheckelsXNorm,
+        x1Denorm: sheckelsXDenorm,
+        x2Denorm: sheckelsXDenorm,
+        dimensions: [2],
+        step: 1,
+        additionalPicks: sheckelsPicks(),
+        zCoef: 1/10
+    },
+    {
+        deba: d6,
+        extender: d6Extender,
+        p: worstFromTheClosest,
+        health: generalHealth.bind(null, d6XNorm.bind(null, max)),
+        xMin: 0,
+        xMax: 30,
+        xNorm: d6XNorm.bind(null, max),
+        xDenorm: d6Denorm.bind(null, max),
+        dimensions: [1]
+    },
+    {
+        deba: f42,
+        extender: f42Extender,
+        p: worstFromTheClosest,
+        health: f42Health,
+        x1Min: -2.5,
+        x2Min: -2,
+        x1Max: 3,
+        x2Max: 2,
+        x1Norm: xNormConst(-2.5, 3),
+        x2Norm: xNormConst(-2, 2),
+        x1Denorm: xDenormConst(-2.5, 3),
+        x2Denorm: xDenormConst(-2, 2),
+        dimensions: [2],
+        step: 0.2
+    },{
+        deba: f45,
+        extender: f45Extender,
+        p: worstFromTheClosest,
+        health: f45Health,
+        x1Min: -6,
+        x2Min: -6,
+        x1Max: 6,
+        x2Max: 6,
+        x1Norm: xNormConst(-6, 6),
+        x2Norm: xNormConst(-6, 6),
+        x1Denorm: xDenormConst(-6, 6),
+        x2Denorm: xDenormConst(-6, 6),
+        dimensions: [2],
+        step: 0.2
     }
 ];
 (async function main() {
-    for (var dimension = 1; dimension <= 3; dimension++) {
+    for (var dimension = 1; dimension <= 4; dimension++) {
         const stat = {};
         for (var configI = 0; configI < configs.length; configI++) {
             var config = configs[configI];
@@ -444,9 +630,9 @@ const configs = [
                         await drawChart(config.deba, xMin, xMax, res, file + ".png");
                     } else if (dimension === 2) {
                         if (config.x1Min && config.x2Min && config.x1Max && config.x2Max) {
-                            await draw3dChart2(config.deba, res, file + ".png", config.x1Min, config.x2Min, config.x1Max, config.x2Max, config.step, config.additionalPicks);
+                            await draw3dChart2(config.deba, res, file + ".png", config.x1Min, config.x2Min, config.x1Max, config.x2Max, config.step, config.additionalPicks, config.zCoef);
                         } else {
-                            await draw3dChart3(config.deba, res, file + ".png", config.xMin, config.xMax);
+                            await draw3dChart3(config.deba, res, file + ".png", config.xMin, config.xMax, config.zCoef);
                         }
                     }
                 }
